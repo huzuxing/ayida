@@ -1,0 +1,16 @@
+package com.ayida.cms.action.admin.login;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping(value = "/ayida/admin/")
+public class AdminLoginAct
+{
+	@RequestMapping(value = "login.do", method = RequestMethod.GET)
+	public String adminLogin(String username, String password) 
+	{
+		return "admin/login";
+	}
+}

@@ -1,0 +1,18 @@
+package com.ayida.cms.dao;
+
+import com.ayida.cms.entity.role.Role;
+
+public interface RoleDAO
+{
+	/**
+	 * save User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public Role save(Role bean);
+	
+	public Role getRoleByRoleName(String name);
+	
+	public Role getRoleById(Integer id);
+}

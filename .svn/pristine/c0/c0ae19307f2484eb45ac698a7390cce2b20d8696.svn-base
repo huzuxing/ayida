@@ -1,0 +1,22 @@
+package com.ayida.cms.service.impl;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ayida.cms.entity.authc.Authentication;
+import com.ayida.cms.service.AuthenticationService;
+@Service(value = "authcService")
+public class AuthenticationServiceImpl implements AuthenticationService
+{
+
+	@Transactional
+	public Authentication login(String username, String password, String phone,
+			HttpServletResponse response, HttpServletRequest request)
+	{
+		return null;
+	}
+
+}

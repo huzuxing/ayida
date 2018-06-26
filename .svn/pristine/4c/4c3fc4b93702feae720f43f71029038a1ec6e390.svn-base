@@ -1,0 +1,79 @@
+package com.ayida.cms.dao.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.ayida.cms.dao.DoctorExtDAO;
+import com.ayida.cms.entity.doctor.DoctorExt;
+import com.ayida.common.mybatis.BaseDAO;
+import com.ayida.common.mybatis.Pager;
+
+@Repository(value = "docExtDao")
+public class DoctorExtDAOImpl extends BaseDAO<DoctorExt> implements DoctorExtDAO
+{
+
+	@Override
+	public DoctorExt save(DoctorExt bean)
+	{
+		return super.save(bean);
+	}
+
+	@Override
+	public DoctorExt findById(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<DoctorExt> getCollectedDoctorsByUserId(Integer userId)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int updateById(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteById(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<DoctorExt> getAllDoctors()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<DoctorExt> getDoctorPagerList(Pager pager)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String getMethodPath(String methodName)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<String, Integer> getIdMap(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

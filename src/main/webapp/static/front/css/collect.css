@@ -1,0 +1,100 @@
+/*
+   Copyright (c) 2015,Deepspring Inc. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution, and decompilation.
+*/
+{margin:0; padding:0;}
+html, body{margin:0;padding:0;width:100%;height:100%; overflow:hidden;font-family:'Microsoft YaHei',Arial,sans-serif; color:#333;position: relative;}
+.clear{
+    clear:both;
+    height:1px;
+    overflow:hidden;
+}
+/*定义收藏页头部*/
+.header01{
+    background-color: #2aabd2;
+    width: 100%;
+    height: 100px;
+    padding: 20px;
+    border-radius:5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #000;
+    position:relative;
+
+    z-index:2 ;
+}
+.header02{
+    border-left:#ffffff 4px solid;
+    width: 1px;
+    height: 20px;
+    background-color: #ffffff;
+    display: inline;
+
+
+}
+.header03{
+    color: #ffffff;
+    font-size: 16px;
+    padding-left: 10px;
+}
+.header04{
+    margin-left: 100px;
+    display: inline;
+}
+.header05{
+    float: right;
+    margin-top: 40px;
+
+}
+.header06{
+    color: #ffffff;
+    font-size: 16px;
+    text-decoration: underline;
+    padding: 0px 30px 0px 0px;
+
+}
+.header07{
+    color: #ffffff;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 0px 50px 0px 0px;
+
+}
+
+/*定义内容部分*/
+.body01{
+
+    border: none;
+    background-color: #b9def0;
+    height: 100%;
+    position:relative;
+    z-index:1;
+
+}
+.body02{
+    width: 98%;
+    height: 218px;
+    background-color: #ffffff;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+.header05 a{
+    text-decoration: none;
+}
+#time01 table{
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+.body03{
+     align-content: center;
+     padding-left: 60px;
+     align-items: flex-start;
+     flex-direction: row;
+     flex-wrap: wrap;
+     justify-content: center;
+     margin: 0px 0px 0px 10px;
+}

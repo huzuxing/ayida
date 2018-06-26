@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.HotWordDAO">
+
+	<resultMap type="HotWord" id="HotWord">
+		<id property="id" column="word_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="word_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="parentId" column="parent_id" javaType="Integer"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="save" parameterType="HotWord" useGeneratedKeys="true"
+		keyProperty="id">
+		<![CDATA[
+			insert into hot_word(word_name, parent_id) 
+			values(#{name}, #{parentId})
+		]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+		<![CDATA[
+			update hot_word set 
+			word_name=#{bean.name}, parent_id=#{bean.parentId} 
+			where word_id=#{bean.id}
+		]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+		<![CDATA[
+			delete from hot_word where word_id=#{id} 
+		]]>
+	</delete>
+	
+	<delete id="deleteChild" parameterType="java.util.Map">
+		<![CDATA[
+			delete from hot_word where parent_id=#{id}
+		]]>
+	</delete>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="HotWord">
+		<![CDATA[
+			select word_id, word_name, parent_id 
+			from hot_word 
+			where word_id=#{id}
+		]]>
+	</select>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="HotWord">
+		<![CDATA[
+			select word_id, word_name, parent_id 
+			from hot_word 
+			where word_name=#{name}
+		]]>
+	</select>
+
+	<select id="getPagerList" parameterType="Pager" resultMap="HotWord">
+    	<![CDATA[
+    		select h.word_id as word_id, h.word_name as word_name, h.parent_id as parent_id   
+    		from hot_word h 
+    		left join hot_word_statistic hws on h.word_id=hws.word_id 
+    		order by hws.total_count desc 
+    	]]>
+	</select>
+	
+	<select id="getChildList" parameterType="java.util.Map" resultMap="HotWord">
+    	<![CDATA[
+    		select word_id, word_name, parent_id 
+    		from hot_word 
+    		where parent_id=#{id}
+    	]]>
+	</select>
+
+</mapper> 

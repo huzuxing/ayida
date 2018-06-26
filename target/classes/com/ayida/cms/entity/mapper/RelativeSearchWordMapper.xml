@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.RelativeSearchWordDAO">
+	<resultMap type="RelativeSearchWord" id="relativeWord">
+		<id property="relativeId" column="relative_id" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result property="id" column="id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="doctorName" column="doctor_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="diseaseName" column="disease_name" javaType="String"
+			jdbcType="CLOB" />
+		<result property="doctorNameInitial" column="doctor_name_initial"
+			javaType="String" jdbcType="VARCHAR" />
+		<result property="diseaseNameInitial" column="disease_name_initial"
+			javaType="String" jdbcType="CLOB" />
+		<result property="cityName" column="city_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="hit" column="hit" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result property="hospitalBelongings" column="hospital_belongings" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="save" parameterType="RelativeSearchWord"
+		useGeneratedKeys="true" keyProperty="relativeId">
+		<![CDATA[
+			insert into relative_search_word(id, doctor_name, disease_name, 
+			doctor_name_initial, disease_name_initial, city_name, hit, hospital_belongings) 
+			values(#{id}, #{doctorName}, #{diseaseName}, #{doctorNameInitial},
+			 #{diseaseNameInitial}, #{cityName}, #{hit}, #{hospitalBelongings}) 
+		]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update relative_search_word set id=#{id}, doctor_name=#{bean.doctorName}, 
+    		disease_name=#{bean.diseaseName}, doctorNameInitial=#{bean.doctorNameInitial}, 
+    		diseaseNameInitial=#{bean.diseaseNameInitial}, 
+    		city_name=#{bean.cityName}, hit=#{bean.hit}, 
+    		hospital_belongings=#{bean.hospitalBelongings} 
+    		where relative_id=#{bean.relativeId}
+    	]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from relative_search_word where  relative_id=#{id}
+    	]]>
+	</delete>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="relativeWord">
+    	<![CDATA[
+    		select relative_id, id, doctor_name, disease_name, 
+    		doctor_name_initial, disease_name_initial, city_name, hit, 
+    		hospital_belongings 
+    		from relative_search_word 
+    		where doctor_name like CONCAT(CONCAT("%", #{name}), "%") or 
+    		disease_name like CONCAT(CONCAT("%", #{name}), "%") or 
+    		doctor_name_initial like CONCAT(CONCAT("%", #{nameInitial}), "%") or 
+    		disease_name_initial like CONCAT(#{nameInitial}, "%") or 
+    		hospital_belongings like CONCAT(CONCAT("%", #{hospitalBelongings}), "%") 
+    		order by hit desc
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="relativeWord">
+    	<![CDATA[
+    		select * from relative_search_word 
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="relativeWord">
+    	<![CDATA[
+    		select relative_id, id, doctor_name, disease_name, 
+    		doctor_name_initial, disease_name_initial, city_name, hit, 
+    		hospital_belongings 
+    		from relative_search_word 
+    		where relative_id=#{id}
+    	]]>
+	</select>
+</mapper> 

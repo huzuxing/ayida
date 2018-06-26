@@ -1,0 +1,27 @@
+package com.ayida.cms.dao.impl;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.ayida.cms.entity.hotword.HotWord;
+import com.ayida.common.mybatis.BaseDAO;
+@Repository(value = "hotWordDao")
+public class HotWordDAOImpl extends BaseDAO<HotWord>
+{
+
+	@Override
+	protected String getMethodPath(String methodName)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<String, Integer> getIdMap(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

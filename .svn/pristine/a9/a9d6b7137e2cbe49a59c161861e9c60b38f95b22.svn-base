@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.AuthenticationDAO">
+
+	<resultMap type="com.ayida.cms.entity.authc.Authentication"
+		id="Authentication">
+		<id property="id" column="authentication_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="userId" column="user_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="username" column="username" javaType="String" jdbcType="VARCHAR" />
+		<result property="loginIp" column="login_ip" javaType="String" jdbcType="INTEGER" />
+		<result property="loginTime" column="login_time" javaType="Date" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<insert id="save" parameterType="Authentication"
+		useGeneratedKeys="true" keyProperty="id">
+    	<![CDATA[
+    		insert into authentication(user_id, username, login_ip, login_time) 
+    		values(#{userId}, #{username}, INET_ATON(#{loginIp}), #{loginTime})
+    	]]>
+	</insert>
+
+	<select id="findByUsername" parameterType="java.util.Map"
+		resultMap="Authentication">
+    	<![CDATA[
+    	select 
+    		authentication_id, 
+    		user_id, 
+    		username, 
+    		INET_NTOA(login_ip), 
+    		login_time 
+    		from authentication  
+    		where username=#{username}
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="Authentication">
+    	<![CDATA[
+    	select 
+    		authentication_id, 
+    		user_id, 
+    		username, 
+    		INET_NTOA(login_ip), 
+    		login_time 
+    		from authentication  
+    		where authentication_id=#{id}
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="Authentication">
+    	<![CDATA[
+    		select 
+    		authentication_id, 
+    		user_id, 
+    		username, 
+    		INET_NTOA(login_ip), 
+    		login_time 
+    		from authentication  
+    	]]>
+	</select>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+		<![CDATA[
+			delete from authentication where authentication_id=#{id}
+		]]>
+	</delete>
+
+</mapper> 

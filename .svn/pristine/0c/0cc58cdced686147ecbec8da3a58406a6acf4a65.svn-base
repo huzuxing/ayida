@@ -1,0 +1,116 @@
+package com.ayida.common.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.ayida.cms.entity.disease.Disease;
+import com.ayida.cms.entity.doctor.Doctor;
+
+public class FileUtils
+{
+	private static final String XLS = "xls";
+
+	private static final String XLSX = "xlsx";
+	
+	private static final String VERSIONUID = "serialVersionUID";
+
+	/**
+	 * 获取文件的后缀
+	 * 
+	 * @param origFileName
+	 * @return
+	 */
+	public static String getExts(String origFileName)
+	{
+		int index = origFileName.lastIndexOf(".");
+		return origFileName.substring(index + 1, origFileName.length());
+	}
+
+	/**
+	 * 获取work工作簿
+	 * 
+	 * @param ext
+	 * @param is
+	 * @return
+	 * @throws IOException
+	 */
+	public static Workbook getWorkBook(String ext, InputStream is)
+			throws IOException
+	{
+		Workbook workBook = null;
+		if (XLS.equalsIgnoreCase(ext))
+		{
+			/** 返回excel2003以下的workbook **/
+			workBook = new HSSFWorkbook(is);
+		}
+		else if (XLSX.equalsIgnoreCase(ext))
+		{
+			/** 针对excel 2007 + xml **/
+			workBook = new XSSFWorkbook(is);
+		}
+		return workBook;
+	}
+
+	/**
+	 * 
+	 * @param <T>
+	 * @param <T>
+	 * @param sheet
+	 * @param t
+	 * @return 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static <T> T extractExcelData(Row row, T o) throws NoSuchMethodException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		Set<Field> fields = new HashSet<Field>();
+		Class<? extends Object> clazz = o.getClass();
+		Field[] dField = clazz.getDeclaredFields();
+		Class<? extends Object> superClazz = clazz.getSuperclass();
+		Field[] superField = superClazz.getDeclaredFields();
+		int len = superField.length;
+		for(Field f : dField)
+		{
+			String fs = f.getName();
+			if (VERSIONUID.equals(fs) || null == fs)
+				break;
+			f.setAccessible(true);
+			System.out.println(f.getType());
+			System.out.println(f.getName());
+			
+//			f.set(clazz, 1);
+//			f.set(clazz, "ceshi");
+		}
+		//fields.forEach(f -> System.out.println(f.getName()));
+//		Class superClazz = clazz.getSuperclass();
+//		Field[]  superField = superClazz.getDeclaredFields();
+//		fields.addAll(Arrays.asList(superField));
+//		fields.forEach(field -> {
+//			if (!"serialVersionUID".equals(field.getName()))
+//			{
+//				System.out.println(field.getName());
+//			}
+//		});
+		return o;
+	}
+
+	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		Disease bean = extractExcelData(null, new Disease());
+		System.out.println(bean.getName());
+	}
+}

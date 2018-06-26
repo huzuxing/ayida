@@ -1,0 +1,516 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+    <meta name="keywords" content="阿医达,找医生，医生搜索，附近医生">
+    <link href="${base}/static/front/css/result02.css" type="text/css" rel="stylesheet" media="all">
+    <link href="${base}/static/front/css/public.css" type="text/css" rel="stylesheet" media="all">
+    <link href="${base}/static/front/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="short icon" href="${base}/static/front/Image/short.png">
+    <script type="text/javascript" src="${base}/static/front/bootstrap/js/bootstrap.min.js"></script>
+    <script src="${base}/static/front/js/jquery.min.js"></script>
+    <script src="${base}/static/front/js/result.js" charset="utf-8"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${base}/static/front/js/public.js"></script>
+    <script src="${base}/static/front/js/jquery.form.js"></script>
+    <script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js"></script>
+    <title>阿医达--搜索列表</title>
+    <style type="text/css">
+    	body {
+			background-color: #afe2ff;
+		}
+    </style>
+    <script type="text/javascript">
+		$(document).ready(function() {
+			$(".myCollections").click(function() {
+				<#if user??>
+					window.location.href = 
+						"${base}/api/member/web/myCollections.jspx?userId=${user.id!}&pageNo=1&pageSize=5";
+					<#else>
+	    			$('.mask-register').fadeOut(100);
+	    			$('.register-active').slideUp(200);
+	    			$('.mask-forget').fadeOut(100);
+	    			$('.forget-active').slideUp(200);
+	    			$('.mask-login').fadeIn(100);
+	    			$('.login-active').slideDown(200);
+				</#if>
+			});
+		});
+		/**收藏医生**/
+    	function doctorCollect(doctorId, resultIndex) {
+    		var flag = $("input[name=collected_" + resultIndex + "]").val().trim();
+    		var collect;
+    		<#if user??>
+    			var userId = "${user.id!}";
+    			// flag = "1" 表示已经收藏，再次点击则取消
+    			if ("1" == flag) {
+    				collect = false;
+    			} 
+    			// flag = "0" 表示未收藏，点击则收藏
+    			else if ("0" == flag){
+    				collect = true;
+    			}
+    			$.ajax({
+    				url : "${base}/api/member/doctorCollection.jspx", 
+    				type : "POST", 
+    				dataType : "JSON", 
+    				data : {"userId" : userId, 
+    					"doctorId" : doctorId, 
+    					"collect" : collect}, 
+    				success : function(data) {
+    					if (200 == data.code) {
+    						if ("1" == flag) {
+    							 $("#collect_" + resultIndex).val("收藏");
+    	    					 $("input[name=collected_" + resultIndex + "]").val("0");
+    		    			} 
+    		    			// flag = "0" 表示未收藏，点击则收藏
+    		    			else if ("0" == flag){
+    		    				 $("#collect_" + resultIndex).val("已收藏");
+    		    				 $("input[name=collected_" + resultIndex + "]").val("1");
+    		    			}
+    					}
+    				}
+    			});
+    			<#else>
+    				alert("请先登录!");
+    		</#if>
+    	}
+    	// 退出登录
+    	function logout() {
+    		$.ajax({
+    			url : "${base}/api/member/logout.jspx", 
+    			type : "POST", 
+    			success : function(data) {
+    				location.reload();
+    			}
+    		});
+    	}
+    	/**根据新浪接口，根据IP获取访问者所在城市**/
+    	var city = remote_ip_info.city + "市";
+    	/**搜索提交之前，判断是否搜索内容为空，若为空，则不提交，搜索框获得焦点**/
+    	function beforeSubmit() {
+    		var query = $("input[name=query]").val();
+    		if ("" == query) {
+    			$("input[name=query]").focus();
+    			$("input[name=city]").val("");
+    			return false;
+    		}
+    		$("input[name=city]").val(city);
+    		return true;
+    	}
+    </script>
+</head>
+<body>
+<input type="hidden" name="nextPage" value="${page.nextPage!}"/>
+<input type="hidden" name="pageSize" value="${page.pageSize!}"/>
+<!--搜索头部-->
+<div class="top-bg">
+    	<a href="${base}/">
+	    	<div class="top-div">
+		        <table>
+		        <tr>
+		            <td>
+		                <img src="${base}/static/front/Image/logo.png" class="top-img">
+		            </td>
+		        </tr>
+		        <tr style="display: block; margin-top: 10px" >
+		            <td>
+		                <span class="top-font">找对医生，找好医生</span>
+		            </td>
+		        </tr>
+		        </table>
+		      </div>
+    	</a>
+        <div class="top-div left-50" style="margin-top: 30px">
+            <form action="${base}/api/search/web/search.jspx" onsubmit="return beforeSubmit();" method="get">
+		        <input type="text" name="query" class="top-ss">
+		        <input type="image" src="${base}/static/front/Image/searchbg.png" class="top-sh">
+		        <input type="hidden" name="city" value="" />
+	       </form>
+        </div>
+    <div class="left-50 top-div" style="margin-top: 60px">
+        <a href="javascript:;" id="top-font01" class="myCollections">我的收藏|</a>
+        <#if user??>
+             <a href="javascript:;" id="top-font01">${user.username}</a>
+             <a href="javascript:;" onclick="logout();" id="top-font01">|退出</a>
+          <#else>
+             <a href="javascript:;" id="top-font01" class="login" >登录</a>&emsp;
+        </#if>
+    </div>
+    <div class="login-active" >
+        <div class="theme-poptit">
+            <a href="javascript:;" title="关闭" class="close">×</a>
+            <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+        </div>
+        <div class="login-img02 dform" >
+           <form action="" onsubmit='return submitForm(this, "${base}/api/member/login.jspx", "login");' method="POST" name="login" >
+               <input type="text" alt="注册手机号码" id="login-phone" name="phone"  placeholder="请输入手机号码" class="ipt"><br />
+               <input type="password" alt="密码" id="login_password" name="password" placeholder="密码" class="ipt" style="margin-top: 20px"><br />
+               <input id="submit" type="submit" value="登录"class="btn03 btn04"><br />
+               <a href="javascript:;" style="color: red" id="forget-active">忘记密码<<</a>&emsp;<span>还没有帐号？<a href="javascript:;" id="register-active" >点击注册</a></span>
+           </form>
+        </div>
+    </div>
+    <div class="mask-login"></div>
+    <div class="register-active" >
+        <div class="theme-register">
+            <a href="javascript:;" title="关闭" class="close">×</a>
+            <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+        </div>
+        <div class="login-img02 dform" >
+            <input type="hidden" name="registerCode" id="registerCode" value=""/>
+               <form action="" onsubmit='return submitForm(this, "${base}/api/member/register.jspx", "register");' method="post" id="jvForm_register">
+                   <input type="text" alt="注册手机号码" name="phone" id="register-phone"  placeholder="请输入手机号码" class="ipt">
+                   <br />
+                   <input type="password" alt="密码" name="password" id="register_password" placeholder="密码" class="ipt" style="margin-top: 20px"><br />
+                   <input type="password" alt="密码" name="password_repeat" placeholder="请再次输入密码" class="ipt" style="margin-top: 20px"><br />
+                   <input type="text" name="code" placeholder="6位短信验证码" class="verification">
+                   <input id="btnCode" type="button" value="点击获取验证码" onclick="sendRegisterMessage();"/>
+                   <br />
+                   <input id="register" type="submit" value="注册" class="btn03 btn04">
+                   <br />
+                   <span>已有帐号？<a href="javascript:;" class="login">点击登录</a></span>
+               </form>
+        </div>
+    </div>
+    <div class="mask-register"></div>
+<div class="forget-active" >
+    <div class="theme-forget">
+        <a href="javascript:;" title="关闭" class="close">×</a>
+        <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+    </div>
+    <div class="login-img02 dform" >
+        <input type="hidden" name="mod" id="mod" value=""/>
+         <form action="" onsubmit='return submitForm(this, "${base}/api/member/resetPassword.jspx", "forget");' method="POST" name="forget" >
+            <input type="text" alt="注册手机号码" name="phone" id="forget-phone" placeholder="请输入手机号码" class="ipt">
+            <br />
+            <input type="text" placeholder="6位短信验证码" class="verification" id="checkCode" name="checkCode" size="6"/>
+            <input id="btnCode02" type="button" value="点击获取验证码" onclick="sendForgetMessage();"/> <br />
+            <input type="password" alt="设置新密码" name="password" id="forget_password" placeholder="设置新密码" class="ipt" style="margin-top: 20px"><br />
+            <input type="password" alt="请再次输入密码" name="forget_password_repeat" placeholder="请再次输入密码" class="ipt" style="margin-top: 20px"><br />
+            <br />
+            <input id="forget" type="submit" value="确认修改"class="btn03 btn04">
+            <br />
+            <span>想起来了？<a href="javascript:;" class="login">点击登录</a></span>
+          </form>
+    </div>
+	</div>
+
+	<div>
+	    <div class="mask-forget"></div>
+	</div>
+</div>
+<!--医生详细列表包括筛选条件和医生的详细信息-->
+<div class="body-bg">
+    <div class="body-bg02">
+        <ul class="nav nav-tabs">
+            <li class="dropdown" style="padding-left :440px"><a href="#">智能排序</a></li>
+            <li class="dropdown" style="padding-left: 30px">
+                <a id="dLabel" role="button" data-toggle="dropdown"  data-target="#"
+                   href="javascript:;">
+                    地理优先 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li><a href="#">离我最近</a></li>
+                    <li><a href="#">成都市</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-submenu" >
+                        <a tabindex="-1" href="#" onclick="morecity()" >更多城市</a>
+                      <ul class="dropdown-menu02" >
+                            <li class="allcity">
+                                <form id="form20" name="wane_search" method="post" action="">
+                                    <select name="one" size="1" onchange="makeplace_a(options.selectedIndex)">
+                                        <option value="">---请选择省份---</option>
+                                        <option value=1>安徽</option>
+                                        <option value=2>北京</option>
+                                        <option value=3>重庆</option>
+                                        <option value=4>福建</option>
+                                        <option value=5>甘肃</option>
+                                        <option value=6>广东</option>
+                                        <option value=7>广西</option>
+                                        <option value=8>贵州</option>
+                                        <option value=9>海南</option>
+                                        <option value=10>河北</option>
+                                        <option value=11>河南</option>
+                                        <option value=12>黑龙江</option>
+                                        <option value=13>湖北</option>
+                                        <option value=14>湖南</option>
+                                        <option value=15>江苏</option>
+                                        <option value=16>江西</option>
+                                        <option value=17>吉林</option>
+                                        <option value=18>辽宁</option>
+                                        <option value=19>内蒙</option>
+                                        <option value=20>宁夏</option>
+                                        <option value=21>青海</option>
+                                        <option value=22>山东</option>
+                                        <option value=23>山西</option>
+                                        <option value=24>陕西</option>
+                                        <option value=25>上海</option>
+                                        <option value=26>四川</option>
+                                        <option value=27>天津</option>
+                                        <option value=28>西藏</option>
+                                        <option value=29>新疆</option>
+                                        <option value=30>云南</option>
+                                        <option value=31>浙江</option>
+                                        <option value=32>香港</option>
+                                        <option value=33>澳门</option>
+                                        <option value=34>台湾</option>
+                                        <option value=35>国外</option>
+                                    </select>
+                                    <select name="place_a">
+                                        <option value="">---请选择城市---</option>
+                                    </select>
+                                    <label>
+                                        <input type="submit" name="Submit" value="确定" class="btn btn-info btn-primary">
+                                    </label>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown" style="padding-left: 40px">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    	更多条件 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" value="checkbox">
+                    <li><a href="#">专科医院</a></li>
+                    <li><a href="#">三甲医院</a></li>
+                    <li><a href="#">副高以上</a></li>
+                    <li><a href="#">学历优先</a></li>
+                    <li><button class="btn btn-info btn-primary">确定</button></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <#if page??>
+    	<#list page.results as result>
+    <div class="body-bg04"></div>
+    <div class="body-bg03" id="body_bg03_${result_index!}">
+        <div class="top-div">
+            <table>
+                <tr>
+                    <td>
+                        <img src="${base}/static/front/Image/header.png" style="border-radius:50%;" class="body-header"/>
+                        <img src="${base}/static/front/Image/man.png" class="body-people">
+                    </td>
+                </tr>
+                <tr class="body-font">
+                    <td class="body-font">
+                        <span >${result.name!}</span>&emsp;&emsp;
+                        <span>${result.department.name!}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="body-font02">
+                        <span>${result.doctorExt.job!}</span>&emsp;|&emsp;
+                        <span>${result.doctorExt.professionalTitles!}</span>
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        <section class="container02">
+                        <script type="text/javascript">
+                        		$(document).ready(function() {
+                        			<#if user??>
+	                    				$.ajax({
+	                    					url : "${base}/api/member/isCollectedOrNot.jspx", 
+	                    					type : "POST", 
+	                    					data : {"userId" : ${user.id!}, 
+	                    						"doctorId" : ${result.id!}}, 
+	                    					dataType : "JSON", 
+	                    					success : function(data) {
+	                    						if (data.collected) {
+	                    							$("#collect_${result_index!}").val("已收藏");
+	                    							$("input[name=collected_${result_index!}]").val("1");
+	                    						}
+	                    					}
+	                    				});
+                    			</#if>
+                        		});
+                        	</script>
+                            <input type="hidden" name="collected_${result_index!}" value="0"/>
+                        	<input id="collect_${result_index!}" onclick="doctorCollect(${result.id!}, ${result_index!})" 
+                        	type="button" class="btn02 btn-round color-2 material-design" ata-color="#ffffff" value='收&emsp;藏'/>
+                        </section>
+                    </td>
+               	 </tr>
+            	</table>
+       	</div>
+        <div class="top-div left-100" id="time01">
+                 <table border="1px" width="600px" align="center" style="border-color: #cccccc;table-layout:fixed">
+                     <caption>坐诊时间
+                         <div class="contain">
+                             <div class="line"></div>
+                         </div>
+                     </caption>
+                     <tr>
+                         <td></td>
+                         <td>一</td>
+                         <td>二</td>
+                         <td>三</td>
+                         <td>四</td>
+                         <td>五</td>
+                         <td>六</td>
+                         <td>日</td>
+                     </tr>
+                     <!-- 处理坐诊时间 -->
+                     	<#assign index=1/>
+                     	<#list result.doctorExt.seeTime?split(";") as time>
+		                 	<#assign weekday=time?substring(time?index_of("|") + 1, time?last_index_of("|"))/>
+		                 	<#assign h=time?substring(time?last_index_of("|") + 1)/>
+		                 	<#assign hour=h?substring(0, h?index_of(":"))?number/>
+		                 	<script type="text/javascript">
+						    	$(document).ready(function() {
+						    		var hour = parseInt("${hour!}");
+						    		var weekday = "${weekday}";
+						    		if ("周一" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(1)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周一" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(1)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周二" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(2)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周二" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(2)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周三" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(3)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周三" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(3)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周四" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(4)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周四" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(4)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周五" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(5)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周五" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(5)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周六" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(6)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周六" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(6)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周日" == weekday && hour < 12)
+						    			$("#morning_${result_index!} td:eq(7)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    		else if ("周日" == weekday && hour > 12)
+						    			$("#afternoon_${result_index!} td:eq(7)").append('<img src="${base}/static/front/Image/${index}.png" class="img-size">');
+						    	});
+						    </script>
+						    <#assign index=index+1/>
+	                 	 </#list>
+                     <tr id="morning_${result_index!}">
+                         <td>上午</td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                     </tr>
+                     <tr id="afternoon_${result_index!}">
+                         <td>下午</td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                     </tr>
+                 </table>
+                 <div>
+                     <div style="margin-top: 5px">
+                         <span class="bz">备注:</span>
+                     </div>
+                         <div class="top-div">
+                             <ul>
+                             	<#assign n=1/>
+			                 	<#list result.doctorExt.seeTime?split(";") as time>
+			                 	<#assign name=time?substring(0, time?index_of("|"))/>
+				                 	<li>
+	                                     <img src="${base}/static/front/Image/${n}.png" class="img-size">&emsp;<span>${name!}</span>
+	                                 </li>
+				                 <#assign n=n+1/>
+			                 	</#list>
+                             </ul>
+                         </div>
+             		</div>
+	        </div>
+	    <div class="skilled">
+                 	擅长领域
+                     <div class="contain03">
+                         <div class="line03"></div>
+                     </div>
+		            <ul>
+			            <#list result.doctorExt.skilledField?split(";") as skilled>
+		                 	<#if skilled_index gt 3>
+		                  		<#break>
+		                  	</#if>
+		                 	<li class="body-fon04">${skilled!}</li>
+		                 </#list>
+		                 <li>
+			                <input type="hidden" name="moreInfo_hidden_${result_index!}" value="${result_index!}"/>
+		        			<input type="hidden" name="moreInfo_key_${result_index!}" value="1"/>
+		                 	<input type="button" id="button_${result_index!}" class="btn02 btn-round color-3 material-design"
+		                 	 data-color="#ffffff" onclick='expreadInfo("${result_index!}");' value="更多信息>>"/>
+		                 </li>
+		            </ul>
+            </div>
+       	<div style="clear: both;"></div>
+        <div style="display: none;" id="more_info_${result_index!}" class="more_introduction">
+            <div>
+            	<ul>
+            		<li id="intro_1_${result_index!}" class="on" onclick='change_tab("p", "intro_", 1, 3, ${result_index!});'><img id="p_${result_index!}" src="${base}/static/front/Image/headBlue.png"><span>个人介绍</span></li>
+            		<li id="intro_2_${result_index!}" class="left_20" onclick='change_tab("d", "intro_", 2, 3, ${result_index!});'><img id="d_${result_index!}" src="${base}/static/front/Image/keshiGrey.png"><span>科室介绍</span></li>
+            		<li id="intro_3_${result_index!}" class="left_20" onclick='change_tab("h", "intro_", 3, 3, ${result_index!});'><img id="h_${result_index!}" src="${base}/static/front/Image/houseGrey.png"><span>所在医院介绍</span></li>
+            	</ul>
+            </div>
+            <div style="clear:both;"></div>
+            <div id="cont_intro_1_${result_index!}" style="display: block;">
+                <div>
+                    <p style="font-size: 16px; padding: 20px 40px;text-indent: 2em">
+                       ${result.doctorExt.description!}
+                    </p>
+                </div>
+            </div>
+            <div id="cont_intro_2_${result_index!}" style="display: none;">
+                <div>
+                    <p style="font-size: 16px; padding: 20px 40px;text-indent: 2em">
+                        ${result.department.description!}
+                    </p>
+                </div>
+            </div>
+            <div id="cont_intro_3_${result_index!}" style="display: none;">
+                <div>
+                    <p style="font-size: 16px; padding: 20px 40px;text-indent: 2em">
+                        	<#list result.hospitals as h>
+                        		${h.name!}：${h.desc!}
+                        	</#list>			
+                    </p>
+                </div>
+            </div>
+     </div>
+ 	</div>
+	 	</#list>
+	</#if>
+<input type="hidden" value="${base}" name="base"/>
+</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		/**滚动条滚动到底部，自动加载**/
+		var pageNo = $("input[name=nextPage]").val().trim();
+		var pageSize = $("input[name=pageSize]").val().trim();
+		var location = window.location.href;
+		location = location.substring(location.lastIndexOf("?"));
+		location = decodeURIComponent(location);
+		 $(window).scroll(function() {
+			if ($(document).scrollTop() + $(window).height() >= $(document).height()) {
+				//window.location.href = window.location.href + "&pageNo=1&pageSize=10";
+			} 
+		}); 
+	});
+</script>
+</html>

@@ -1,0 +1,76 @@
+package com.ayida.cms.action.front.member;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import jdk.nashorn.internal.ir.annotations.Reference;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ayida.cms.entity.api.MessageEntity;
+import com.ayida.cms.service.UserService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+@Controller
+@RequestMapping(value = "/member/")
+public class RegisterAct
+{
+	private Logger log = LoggerFactory.getLogger(RegisterAct.class);
+	
+	@RequestMapping(value = "register.jspx", method = RequestMethod.GET)
+	public String toRegister() 
+	{
+		return "front/login";
+	}
+	
+	@RequestMapping(value = "register", method = RequestMethod.POST)
+	public void register(HttpServletRequest request, HttpServletResponse response, 
+			String phone, String password, String messageText)
+	{
+		
+	}
+	
+	@RequestMapping(value = "sendMsg.jspx", method = RequestMethod.GET)
+	public ResponseEntity<String> sendMessage(HttpServletRequest request, HttpServletResponse response,
+			String phone) 
+	{
+		System.out.println("ask success...");
+		MessageEntity message = new MessageEntity();
+		message.setMessageText("123456");
+		Gson gson = new GsonBuilder()  
+        .excludeFieldsWithoutExposeAnnotation() //不导出实体中没有用@Expose注解的属性  
+        .enableComplexMapKeySerialization() //支持Map的key为复杂对象的形式  
+        .serializeNulls().setDateFormat("yyyy-MM-dd HH:mm")//时间转化为特定格式    
+        .setPrettyPrinting() //对json结果格式化.  
+        .setVersion(1.0)  
+        .create(); 
+		String json = gson.toJson(message);
+		System.out.println(json + "====");
+//		response.setContentType("application/json;charset=UTF-8");
+//		response.setHeader("Pragma", "No-cache");
+//		response.setHeader("Cache-Control", "no-cache");
+//		response.setDateHeader("Expires", 0);
+//		try {
+//			response.getWriter().write(json);
+//			response.getWriter().flush();
+//			response.getWriter().close();
+//		} catch (IOException e) {
+//			log.error(e.getMessage(), e);
+//		}
+		return new ResponseEntity<String>("front/login", HttpStatus.OK);
+
+	}
+	
+	@Autowired
+	private UserService userService;
+}

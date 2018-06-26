@@ -1,0 +1,131 @@
+package com.ayida.cms.api.search;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ayida.cms.entity.doctor.Doctor;
+import com.ayida.cms.entity.hotword.RelativeSearchWord;
+import com.ayida.cms.lucene.LuceneContentSvc;
+import com.ayida.cms.lucene.LuceneContentSvcImpl;
+import com.ayida.cms.service.RelativeSearchWordService;
+import com.ayida.cms.service.SearchWordCache;
+import com.ayida.common.constant.Constants;
+import com.ayida.common.util.PageUtils;
+import com.ayida.common.util.RequestUtils;
+import com.ayida.common.util.ResponseUtils;
+import com.ayida.core.security.mvc.RealPathResolver;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+@Controller
+@RequestMapping(value = "api/search/")
+public class SearchAPI
+{
+	private static Logger log = LoggerFactory
+			.getLogger(LuceneContentSvcImpl.class);
+
+	@Autowired
+	private SearchWordCache searchWordCache;
+
+	@Autowired
+	private RealPathResolver realPathResolver;
+
+	@Autowired
+	private LuceneContentSvc luceneContentSvc;
+
+	@Autowired
+	private RelativeSearchWordService relativeService;
+
+	@RequestMapping(value = "web/search.jspx", method = RequestMethod.POST)
+	public String webSearch(HttpServletRequest request, Model model,
+			HttpServletResponse response, String query, Integer pageNo,
+			Integer pageSize)
+	{
+		List<Doctor> list = getDoctorList(query, pageNo, pageSize);
+		model.addAttribute("doctors", list);
+		return "front/search/search_result";
+	}
+
+	/**
+	 * @param request
+	 * @param response
+	 * @param query
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping(value = "search.jspx", method = RequestMethod.GET)
+	public ResponseEntity<String> search(HttpServletRequest request,
+			HttpServletResponse response, String query, Integer pageNo,
+			Integer pageSize)
+	{
+		List<Doctor> list = getDoctorList(query, pageNo, pageSize);
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()// 不导出实体中没有用@Expose标注的属性
+				.enableComplexMapKeySerialization() // 支持Map key为对象的复杂形式
+				.serializeNulls().setDateFormat("yyyy:MM:dd hh:mm:ss") // 设置时间格式
+				.setPrettyPrinting() // 对json结果格式化
+				.setVersion(1.0).create();
+		String json = gson.toJson(list);
+		return new ResponseEntity<String>(json,
+				ResponseUtils.getJsonHttpHeaders(), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "ajaxSearch.jspx", method = RequestMethod.GET)
+	public void ajaxSearch(HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		String name = RequestUtils.getQueryParam(request, "query");
+		List<RelativeSearchWord> list = relativeService.findByName(name);
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()// 不导出实体中没有用@Expose标注的属性
+				.enableComplexMapKeySerialization() // 支持Map key为对象的复杂形式
+				.serializeNulls().setDateFormat("yyyy:MM:dd hh:mm:ss") // 设置时间格式
+				.setPrettyPrinting() // 对json结果格式化
+				.setVersion(1.0).create();
+		String json = gson.toJson(list);
+		/** 向客户端发送json数据 **/
+		ResponseUtils.renderJson(response, json);
+	}
+
+	private List<Doctor> getDoctorList(String query, Integer pageNo,
+			Integer pageSize)
+	{
+		String path = realPathResolver.get(Constants.LUCENE_PATH);
+		List<Doctor> doctorList = null;
+		try
+		{
+			doctorList = luceneContentSvc.searchList(path,
+					PageUtils.parseKeyWords(query), null,
+					PageUtils.cpn(pageNo), PageUtils.cps(pageSize));
+		}
+		catch (CorruptIndexException e)
+		{
+			log.error("CorruptIndexException:" + e.getMessage());
+		}
+		catch (IOException e)
+		{
+			log.error("IOException:" + e.getMessage());
+		}
+		catch (ParseException e)
+		{
+			log.error("ParserException:" + e.getMessage());
+		}
+		searchWordCache.cacheWord(query);
+		return doctorList;
+	}
+
+}

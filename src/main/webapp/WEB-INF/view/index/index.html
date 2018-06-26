@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="CONTENT-TYPE" content="text/html" charset="UTF-8">
+    <meta name="keywords" content="阿医达,找医生，医生搜索，附近医生">
+    <link href="${base}/static/front/css/index.css" type="text/css" rel="stylesheet" media="all">
+    <link href="${base}/static/front/css/public.css" type="text/css" rel="stylesheet" media="all">
+    <link href="${base}/static/front/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${base}/static/front/css/jquery.autocomplete.css" rel="stylesheet">
+    <link rel="short icon" href="${base}/static/front/Image/short.png">
+    <script src="${base}/static/front/js/jquery-1.9.1.min.js"></script>
+    <script src="${base}/static/front/js/jquery.form.js"></script>
+    <script src="${base}/static/front/js/public.js"></script>
+    <script src="${base}/static/front/js/jquery-ui.js"></script>
+    <script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js"></script>
+    <title>阿医达-www.ayida.cn</title>
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$("#myCollections").click(function() {
+    			<#if user??>
+    				window.location.href = 
+    					"${base}/api/member/web/myCollections.jspx?userId=${user.id!}&pageNo=1&pageSize=5";
+    				<#else>
+	    			$('.mask-register').fadeOut(100);
+	    			$('.register-active').slideUp(200);
+	    			$('.mask-forget').fadeOut(100);
+	    			$('.forget-active').slideUp(200);
+	    			$('.mask-login').fadeIn(100);
+	    			$('.login-active').slideDown(200);
+    			</#if>
+    		});
+    	});
+   		/**根据新浪接口，根据IP获取访问者所在城市**/
+    	var city = remote_ip_info.city + "市";
+    	/**搜索提交之前，判断是否搜索内容为空，若为空，则不提交，搜索框获得焦点**/
+    	function beforeSubmit() {
+    		var query = $("input[name=query]").val();
+    		if ("" == query) {
+    			$("input[name=query]").focus();
+    			$("input[name=cityName]").val("");
+    			return false;
+    		}
+    		$("input[name=cityName]").val(city);
+    		return true;
+    	}
+    	/**热词搜索提交**/
+    	function querySearch(query) {
+    		if ("" == query) return;
+    		window.location.href = "${base}/api/search/web/search.jspx?query=" + query + "&cityName=" + city;
+    	}
+    </script>
+</head>
+<body>
+<input type="hidden" name="base" value="${base}"/>
+   <table width="100%" style="z-index: 10">
+           <div class="font-right">
+                    <a href="javascript:;" id="myCollections">我的收藏|</a>
+                    <#if user??>
+                    	<a href="javascript:;">${user.username}</a>
+                    	<a href="${base}/api/member/logout.jspx?returnUrl=/">|退出</a>
+                    <#else>
+                    	<a href="javascript:;" name="tl-login" class="login" >登录</a>&emsp;
+                    </#if>
+            </div>
+       <div class="login-active" >
+           <div class="theme-poptit">
+               <a href="javascript:;" title="关闭" class="close">×</a>
+               <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+           </div>
+       <div class="login-img02 dform" >
+           <form action="" onsubmit='return submitForm(this, "${base}/api/member/login.jspx", "login");' method="POST" name="login" >
+               <input type="text" alt="注册手机号码" id="login-phone" name="phone"  placeholder="请输入手机号码" class="ipt"><br />
+               <input type="password" alt="密码" id="login_password" name="password" placeholder="密码" class="ipt" style="margin-top: 20px"><br />
+               <input id="submit" type="submit" value="登录"class="btn03 btn04"><br />
+               <a href="javascript:;" style="color: red" id="forget-active">忘记密码<<</a>&emsp;<span>还没有帐号？<a href="javascript:;" id="register-active" >点击注册</a></span>
+           </form>
+           
+       </div>
+       </div>
+       <div class="mask-login"></div>
+
+       <div class="register-active" >
+           <div class="theme-register">
+               <a href="javascript:;" title="关闭" class="close">×</a>
+               <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+           </div>
+           <div class="login-img02 dform" >
+           <input type="hidden" name="registerCode" id="registerCode" value=""/>
+               <form action="" onsubmit='return submitForm(this, "${base}/api/member/register.jspx", "register");' method="post" id="jvForm_register">
+                   <input type="text" alt="注册手机号码" name="phone" id="register-phone"  placeholder="请输入手机号码" class="ipt">
+                   <br />
+                   <input type="password" alt="密码" name="password" id="register_password" placeholder="密码" class="ipt" style="margin-top: 20px"><br />
+                   <input type="password" alt="密码" name="password_repeat" placeholder="请再次输入密码" class="ipt" style="margin-top: 20px"><br />
+                   <input type="text" name="code" placeholder="6位短信验证码" class="verification">
+                   <input id="btnCode" type="button" value="点击获取验证码" onclick="sendRegisterMessage();"/>
+                   <br />
+                   <input id="register" type="submit" value="注册" class="btn03 btn04">
+                   <br />
+                   <span>已有帐号？<a href="javascript:;" class="login">点击登录</a></span>
+               </form>
+           </div>
+           </div>
+
+             <div>
+                 <div class="mask-register"></div>
+                 <div class="forget-active" >
+                     <div class="theme-forget">
+                         <a href="javascript:;" title="关闭" class="close">×</a>
+                         <h4 align="center"> <img src="${base}/static/front/Image/logo-web.png" alt="阿医达" width="80px" hight="90px"> </h4>
+                     </div>
+                     <div class="login-img02 dform" >
+                     	<input type="hidden" name="mod" id="mod" value=""/>
+                         <form action="" onsubmit='return submitForm(this, "${base}/api/member/resetPassword.jspx", "forget");' method="POST" name="forget" >
+                             <input type="text" alt="注册手机号码" name="phone" id="forget-phone" placeholder="请输入手机号码" class="ipt">
+                             <br />
+                             <input type="text" placeholder="6位短信验证码" class="verification" id="checkCode" name="checkCode" size="6"/>
+                             <input id="btnCode02" type="button" value="点击获取验证码" onclick="sendForgetMessage();"/> <br />
+                             <input type="password" alt="设置新密码" name="password" id="forget_password" placeholder="设置新密码" class="ipt" style="margin-top: 20px"><br />
+                             <input type="password" alt="请再次输入密码" name="forget_password_repeat" placeholder="请再次输入密码" class="ipt" style="margin-top: 20px"><br />
+                             <br />
+                             <input id="forget" type="submit" value="确认修改"class="btn03 btn04">
+                             <br />
+                             <span>想起来了？<a href="javascript:;" class="login">点击登录</a></span>
+                         </form>
+                     </div>
+                 </div>
+
+                 <div>
+                     <div class="mask-forget"></div>
+	              <tr align="center" style="display: block; margin-top: 10px" >
+	                    <td>
+	                      <img src="${base}/static/front/Image/logo-web.png" alt="找对医生,找好医生" width="80px" height="98px">
+	                   </td>
+	              </tr>
+              <tr align="center" style="margin-top: 20px">
+                 <td id="title">找对医生,找好医生</td>
+              </tr>
+           </div>
+           <div>
+             <form action="${base}/api/search/web/search.jspx" onsubmit="return beforeSubmit();" id="fw" name="a" method="get" onmousedown="">
+              <tr align="center" style="display:block;margin-top: 20px;">
+               <td align="center">
+                   <span class="s_ipt_wr">
+                       <input type="text" name="query" id="kw" style="height: 40px" placeholder="请输入医生名或者病状" value="" onfocus="javascript:if(this.value=='请输入疾病或者医生姓名')this.value='';">
+                   </span>
+                   <span class="s_btn_wr">
+                   		<input type="submit" value="搜索一下" id="su" class="btn-bg"/>
+                   </span>
+                   <input type="hidden" name="cityName" value="" />
+               </td>
+        	 </tr>
+            </form>
+     </div>
+   </table>
+           <div style="text-align: center; margin-top: 80px" >
+           <p>
+           <#if hits??>
+           	<#list hits as hit>
+           		<#if hit_index gt 4>
+           			<#break>
+           		</#if>
+           		<a class="btn btn-primary btn-sm" role="button" onclick='querySearch("${hit.name!}");' href="javascript:;">
+               		${hit.name!}
+              	</a>
+           	</#list>
+           </#if>
+           </p>
+           <p>
+            <#if hits??>
+           	<#list hits as hit>
+           		<#if hit_index gt 9>
+           			<#break>
+           		</#if>
+           		<#if hit_index gt 4>
+	           		<a class="btn btn-primary btn-sm" role="button" onclick='querySearch("${hit.name!}");' href="javascript:;">
+	               		${hit.name!}
+	              	</a>
+	            </#if>
+           	</#list>
+           </#if>
+           </p>
+               <p>
+            <#if hits??>
+           	<#list hits as hit>
+           		<#if hit_index gt 15>
+           			<#break>
+           		</#if>
+           		<#if hit_index gt 9>
+	           		<a class="btn btn-primary btn-sm" role="button" onclick='querySearch("${hit.name!}");' href="javascript:;">
+	               		${hit.name!}
+	              	</a>
+	            </#if>
+           	</#list>
+           </#if>
+               </p>
+               <p>
+            <#if hits??>
+           	<#list hits as hit>
+           		<#if hit_index gt 21>
+           			<#break>
+           		</#if>
+           		<#if hit_index gt 15>
+	           		<a class="btn btn-primary btn-sm" role="button" onclick='querySearch("${hit.name!}");' href="javascript:;">
+	               		${hit.name!}
+	              	</a>
+	            </#if>
+           	</#list>
+           </#if>
+               </p>
+       </div>
+
+           <div style="height: 50px;width:100%;text-align: center;
+        background-color: #FFF;position:absolute;bottom: 0;
+        font-size: 14px;color:#b2b2b2;">
+               <p style="margin-top: 16px">
+                   Copyright©2015 成都阿医达科技有限公司 ayida.cn All Rights Reserved. 蜀ICP备####号
+               </p>
+           </div>
+       </div>
+
+</body>
+<script type="text/javascript" src="${base}/static/front/bootstrap/js/bootstrap.js"/>
+</html>

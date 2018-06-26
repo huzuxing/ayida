@@ -1,0 +1,12 @@
+package com.ayida.cms.service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ayida.cms.entity.authc.Authentication;
+
+public interface AuthenticationService
+{
+	public Authentication login(String username, String password, String phone,
+			HttpServletResponse response, HttpServletRequest request);
+}

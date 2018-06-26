@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+   
+<mapper namespace="com.ayida.test.AuthorDAO">  
+    
+    <resultMap type="com.ayida.test.Author" id="Author">
+    	<id property="id" column="author_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="authorName" column="authorname" javaType="String" jdbcType="VARCHAR"/>
+    	<collection property="blogs" javaType="java.util.Set" resultMap="blogs"/>
+    </resultMap>
+    
+    <!-- 角色 -->
+    <resultMap type="com.ayida.test.Blog" id="blogs">
+    	<id property="id" column="blog_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="blogName" column="blogname" javaType="String" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <select id="findById" parameterType="java.util.Map" resultMap="Author">
+    	<![CDATA[
+    		select a.author_id author_id, a.authorname authorname, 
+    		b.blog_id blog_id, b.blogname blogname 
+    		from author a 
+    		left join author_blog ab on a.author_id = ab.author_id 
+    		left join blog b on ab.blog_id = b.blog_id
+    		where a.authorname=#{id}
+    	]]>
+    </select>
+    
+</mapper> 

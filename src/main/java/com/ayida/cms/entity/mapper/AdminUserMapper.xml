@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+   
+<mapper namespace="com.ayida.cms.dao.AdminUserDAO">  
+     <resultMap type="com.ayida.cms.entity.user.AdminUser" id="AdminUser">
+    	<id property="id" column="user_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="username" column="username" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="password" column="password" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="lastLoginIp" column="last_login_ip" javaType="String" jdbcType="INTEGER"/>
+    	<result property="lastLoginTime" column="last_login_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    	<result property="loginCount" column="login_count" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="isDisabled" column="is_disabled" javaType="boolean" jdbcType="BOOLEAN"/>
+    	<result property="updateTime" column="update_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    	<result property="isAdmin" column="is_admin" javaType="boolean" jdbcType="BOOLEAN"/>
+    	<result property="errorCount" column="error_count" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="errorTime" column="error_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <insert id="save" parameterType="AdminUser" useGeneratedKeys="true" keyProperty="id">
+    	<![CDATA[
+    		insert into user(username, password, is_admin, 
+    		is_disabled) values(#{username}, #{password}, #{isAdmin}, #{isDisabled})
+    	]]>
+    </insert>
+    
+    <update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update user set username=#{bean.username},
+    		is_disabled=#{bean.isDisabled},
+    		update_time=#{bean.updateTime} where user_id=#{bean.id}
+    	]]>
+    </update>
+    
+    <update id="updateLoginInfo" parameterType="java.util.Map">
+    	<![CDATA[
+    		update user set last_login_ip=INET_ATON(#{bean.lastLoginIp}), 
+    		last_login_time=#{bean.lastLoginTime}, 
+    		login_count=#{bean.loginCount} 
+    		where user_id=#{bean.id} 
+    	]]>
+    </update>
+    
+    <select id="findByUsername" parameterType="java.util.Map" resultMap="AdminUser">
+    	<![CDATA[
+    		select user_id, username, password, register_ip, register_time, last_login_ip, last_login_time, 
+    		login_count, is_admin, is_disabled, update_time from user where username=#{username}
+    	]]>
+    </select>
+    
+    <select id="getById" parameterType="java.util.Map" resultMap="AdminUser">
+    	<![CDATA[
+    		select user_id, username, password, register_ip, register_time, last_login_ip, last_login_time, 
+    		login_count, is_admin, is_disabled, update_time from user where user_id=#{id}
+    	]]>
+    </select>
+    
+    <select id="getAll" resultMap="AdminUser">
+    	<![CDATA[
+    		select user_id, username, password, phone, register_ip, register_time, last_login_ip, last_login_time, 
+    		login_count, is_disabled, update_time from user
+    	]]>
+    </select>
+    
+    <insert id="saveRole" parameterType="java.util.Map">
+    	<![CDATA[
+    		insert into user_role(user_id, role_id) values(#{userId}, #{roleId})
+    	]]>
+    </insert>
+</mapper> 

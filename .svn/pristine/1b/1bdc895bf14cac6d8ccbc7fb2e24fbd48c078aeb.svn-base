@@ -1,0 +1,72 @@
+package com.ayida.cms.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ayida.cms.dao.DoctorDAO;
+import com.ayida.cms.dao.DoctorExtDAO;
+import com.ayida.cms.entity.doctor.Doctor;
+import com.ayida.cms.service.DoctorService;
+import com.ayida.common.mybatis.Pager;
+
+@Service(value = "doctorService")
+public class DoctorServiceImpl implements DoctorService
+{
+	@Autowired
+	private DoctorDAO docDao;
+
+	@Autowired
+	private DoctorExtDAO docExtDao;
+
+	@Override
+	public Doctor save(Doctor bean)
+	{
+		docDao.save(bean);
+		return bean;
+	}
+
+	@Override
+	public Doctor findById(Integer id)
+	{
+		return docDao.findById(id);
+	}
+
+	@Override
+	public List<Doctor> getCollectedDoctorsByUserId(Integer userId)
+	{
+		return docDao.getCollectedDoctorsByUserId(userId);
+	}
+
+	@Override
+	public int updateBean(Doctor bean)
+	{
+		return docDao.updateBean(bean);
+	}
+
+	@Override
+	public int deleteById(Integer id)
+	{
+		return docDao.deleteById(id);
+	}
+
+	@Override
+	public List<Doctor> getAllDoctors()
+	{
+		return docDao.getAllDoctors();
+	}
+
+	@Override
+	public List<Doctor> getDoctorPagerList(Pager pager)
+	{
+		return docDao.getDoctorPagerList(pager);
+	}
+
+	@Override
+	public Doctor findByIdOrDiseaseId(Integer id)
+	{
+		return docDao.findByIdOrDiseaseId(id);
+	}
+
+}

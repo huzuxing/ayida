@@ -1,0 +1,24 @@
+package com.ayida.cms.service;
+
+import java.util.List;
+
+import com.ayida.cms.entity.user.User;
+
+public interface UserService
+{
+	/**
+	 * save User
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public int save(String username, String password, String phone, String ip);
+
+	public User findById(Integer id);
+
+	public List<User> findAll();
+
+	public User findByUsername(String username);
+	
+	public int updateUserPassword(String username, String newPassword);
+}

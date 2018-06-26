@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+   
+<mapper namespace="com.ayida.cms.dao.HospitalDAO">  
+    
+    <resultMap type="Hospital" id="Hospital">
+    	<id property="id" column="hospital_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="name" column="hospital_name" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="longitude" column="longitude" javaType="Double" jdbcType="DOUBLE"/>
+    	<result property="latitude" column="latitude" javaType="Double" jdbcType="DOUBLE"/>
+    	<result property="address" column="address" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="desc" column="description" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="cityName" column="city_name" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="belongings" column="belongings" javaType="String" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <insert id="save" parameterType="Hospital" useGeneratedKeys="true" keyColumn="id">
+    	<![CDATA[
+    		insert into hospital(hospital_name, longitude, latitude, address,  description, city_name, belongings) 
+    		values(#{name}, #{longitude}, #{latitude}, #{address}, #{desc}, #{cityName}, #{belongings})
+    	]]>
+    </insert>
+    
+    <select id="getById" parameterType="java.util.Map" resultMap="Hospital">
+    	<![CDATA[
+    		select hospital_id, hospital_name, longitude, latitude, address, description, 
+    		city_name, belongings 
+    		from hospital where hospital_id=#{id} 
+    	]]>
+    </select>
+    
+    <select id="getAll" resultMap="Hospital">
+    	<![CDATA[
+    		select hospital_id, hospital_name, longitude, latitude, address, description, 
+    		city_name, belongings  
+    		from hospital
+    	]]>
+    </select>
+    
+    <select id="findByName" parameterType="java.util.Map" resultMap="Hospital">
+    	<![CDATA[
+    		select hospital_id, hospital_name, longitude, latitude, address, description, 
+    		city_name, belongings  
+    		from hospital where hospital_name=#{name} 
+    	]]>
+    </select>
+    
+    <update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update hospital 
+    		set hospital_name=#{bean.name}, 
+    		longitude=#{bean.longitude}, 
+    		latitude=#{bean.latitude}, 
+    		address=#{bean.address}, 
+    		description=#{bean.desc}, 
+    		city_name=#{bean.cityName}, 
+    		belongings=#{bean.belongings}   
+    		where hospital_id=#{bean.id} 
+    	]]>
+    </update>
+    
+    <delete id="delete" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from hospital where hospital_id=#{id}
+    	]]>
+    </delete>
+</mapper> 

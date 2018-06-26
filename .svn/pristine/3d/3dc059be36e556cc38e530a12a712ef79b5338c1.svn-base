@@ -1,0 +1,92 @@
+package com.ayida.cms.action.admin;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ayida.cms.entity.disease.Disease;
+import com.ayida.cms.entity.hotword.RelativeSearchWord;
+import com.ayida.cms.service.DiseaseService;
+import com.ayida.cms.service.RelativeSearchWordService;
+
+@Controller
+@RequestMapping(value = "/disease/")
+public class DiseaseAct
+{
+	@Autowired
+	private DiseaseService diseaseService;
+
+	@Autowired
+	private RelativeSearchWordService relativeService;
+
+	private static final Logger log = LoggerFactory.getLogger(DoctorAct.class);
+
+	@RequestMapping(value = "list.do", method = RequestMethod.GET)
+	public String list(HttpServletRequest request, Integer pageNo,
+			Integer pageSize, Model model)
+	{
+		// List<Doctor> doctors = doctorService.getDoctorPagerList(pager);
+		List<Disease> diseases = diseaseService.getAllDisease();
+		model.addAttribute("doctors", diseases);
+		return "admin/disease/list";
+	}
+
+	@RequestMapping(value = "add.do", method = RequestMethod.GET)
+	public String add(HttpServletRequest request, Model model)
+	{
+		return "admin/disease/add";
+	}
+
+	@RequestMapping(value = "save.do", method = RequestMethod.POST)
+	public String save(HttpServletRequest request,
+			HttpServletResponse response, Disease bean, Model model)
+	{
+		Disease entity = diseaseService.save(bean);
+		/** 将disease保存后，顺便保存到联词表里，便于前端搜索和联词效果 **/
+		relativeService.save(entity.getId(), entity.getName());
+		return "redirect:list.do";
+	}
+
+	@RequestMapping(value = "update.do", method = RequestMethod.GET)
+	public String update(HttpServletRequest request, Integer id, Model model)
+	{
+		Disease bean = diseaseService.findById(id);
+		model.addAttribute("disease", bean);
+		return "admin/disease/update";
+	}
+
+	@RequestMapping(value = "update.do", method = RequestMethod.POST)
+	public String update(HttpServletRequest request, Disease bean, Model model)
+	{
+		diseaseService.updateBean(bean);
+		RelativeSearchWord word = new RelativeSearchWord();
+		word.setName(bean.getName());
+		relativeService.update(word);
+		return "redirect:list.do";
+	}
+
+	@RequestMapping(value = "delete.do", method = RequestMethod.GET)
+	public String delete(HttpServletRequest request, Integer id, Model model)
+	{
+		Disease bean = diseaseService.findById(id);
+		if (null != bean)
+		{
+			diseaseService.deleteById(bean.getId());
+		}
+		RelativeSearchWord entity = relativeService.findById(bean.getId());
+		if (null != entity)
+		{
+			relativeService.delete(entity);
+		}
+		return "redirect:list.do";
+	}
+}

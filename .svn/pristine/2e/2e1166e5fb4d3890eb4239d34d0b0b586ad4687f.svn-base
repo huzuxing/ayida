@@ -1,0 +1,53 @@
+package com.ayida.common.util;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * HttpServletRequest 帮助类
+ * 
+ * @author John Hu
+ *
+ */
+public class RequestUtils
+{
+	private static final Logger log = LoggerFactory
+			.getLogger(RequestUtils.class);
+
+	/**
+	 * 获取用户的真实ip
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public static String getIpAddr(HttpServletRequest request)
+	{
+		String ip = request.getHeader("X-Real-IP");
+		if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip))
+		{
+			return ip;
+		}
+		//当时代理服务器时，请求消息头会多 X-Forwarded-For ，记录请求ip，和目的主机ip
+		ip = request.getHeader("X-Forwarded-For");
+		if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip))
+		{
+			// 多次反向代理会有多个IP值，第一个非 unknown 为真实IP
+			int index = ip.lastIndexOf(",");
+			if (-1 != index)
+			{
+				ip = ip.substring(0, index);
+				return ip;
+			}
+		}
+		ip = request.getRemoteAddr();
+		//当ip为0:0:0:0:0:0:0:1时，是访问使用了localhost,用127.0.0.1可以避免
+		if ("0:0:0:0:0:0:0:1".equals(ip))
+		{
+			ip = "127.0.0.1";
+		}
+		return ip;
+	}
+}

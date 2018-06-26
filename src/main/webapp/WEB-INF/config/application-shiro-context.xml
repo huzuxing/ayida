@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd" 
+	   default-lazy-init="true">
+	
+	<!-- filters -->
+	<bean id="adminUrlBean" class="com.ayida.core.security.ComAdminUrl">
+		<property name="adminPrefix" value="/ayida/admin/"/>
+		<property name="adminLogin" value="/ayida/admin/login.do"/>
+	</bean>
+	
+	<bean id="authcFilter" class="com.ayida.core.security.ComAuthenticationFilter" parent="adminUrlBean">
+		<property name="adminIndex" value="/ayida/admin/index.do"/>
+	</bean>
+	
+	<bean id="userFilter" class="com.ayida.core.security.ComUserFilter" parent="adminUrlBean"/>
+	
+	<bean id="logoutFilter" class="com.ayida.core.security.ComLogoutFilter" parent="adminUrlBean"/>
+	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/>
+		<property name="loginUrl" value="/"/>
+		<!-- <property name="successUrl" value="/"/> -->
+		<property name="filters">
+			<util:map>
+				<entry key="authc" value-ref="authcFilter" />
+				<entry key="user" value-ref="userFilter" />
+				<entry key="logout" value-ref="logoutFilter" />
+			</util:map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/static/** = anon
+				*.jspx = anon 
+				/login.jspx = authc 
+				/logout.jspx = logout 
+				/ayida/admin/login.do = authc 
+				/ayida/admin/logout.do = logout 
+			 	/api/member/logout.jspx = logout 
+			 	/api/member/resetPassword.jspx = anon
+			 	/api/member/web/** = authc 
+			 	/ayida/admin/** = user  
+				<!-- /api/member/login.jspx = anon
+				/api/member/** = authc
+				/api/member/index.jspx = authc -->
+				<!-- /static/** = anon
+				*.jspx = anon
+				/member/**=authc
+				/member/sendMsg.jspx = anon
+				/member/forgot_password.jspx = anon
+				/member/password_reset.jspx = anon
+				/login.jspx = authc
+				/logout.jspx = logout
+				/ayida/admin/login.do = authc
+				/ayida/admin/logout.do = logout
+				/ayida/admin/**=user
+				/** = authc -->
+				<!-- /ayida/admin/** = authc -->
+			</value>
+		</property>
+	</bean>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="authorizingRealm"/>
+		<!-- <property name="cacheManager" ref="shiroEhcacheManager"/> -->
+	</bean>
+	<bean id="authorizingRealm" class="com.ayida.core.security.AyidaAuthorizingRealm">
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5"/>
+				<!-- true means hex encoded,false means base64 encoded-->
+				<property name="storedCredentialsHexEncoded" value="true"/>
+				<!--迭代次数 -->
+				<!--<property name="hashIterations" value="1"/> -->
+			</bean>
+		</property>
+		<!-- <property name="userMng" ref="userMng"/> -->
+	</bean>
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile">
+			<value>classpath:shiro-encache.xml</value>
+		</property>
+	</bean>
+	<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+	<!-- the lifecycleBeanProcessor has run: -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>

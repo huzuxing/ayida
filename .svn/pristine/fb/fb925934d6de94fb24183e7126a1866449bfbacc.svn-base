@@ -1,0 +1,76 @@
+package com.ayida.cms.entity.hotword;
+
+import com.google.gson.annotations.Expose;
+
+public class RelativeSearchWord implements java.io.Serializable
+{
+	/**
+	 * 查询联词实体类
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Expose
+	private Integer relativeId;
+	
+	@Expose
+	private Integer id;
+	
+	@Expose
+	private String name;
+	
+	@Expose
+	private String nameInitial;
+	
+	@Expose
+	private Integer hit;
+	
+	public Integer getRelativeId()
+	{
+		return relativeId;
+	}
+
+	public void setRelativeId(Integer relativeId)
+	{
+		this.relativeId = relativeId;
+	}
+
+	public Integer getId()
+	{
+		return id;
+	}
+
+	public void setId(Integer id)
+	{
+		this.id = id;
+	}
+
+	public Integer getHit()
+	{
+		return hit;
+	}
+
+	public void setHit(Integer hit)
+	{
+		this.hit = hit;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getNameInitial()
+	{
+		return nameInitial;
+	}
+
+	public void setNameInitial(String nameInitial)
+	{
+		this.nameInitial = nameInitial;
+	}
+}

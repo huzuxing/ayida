@@ -1,0 +1,78 @@
+package com.ayida.cms.action.admin;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ayida.cms.entity.disease.Disease;
+import com.ayida.cms.service.DiseaseService;
+import com.ayida.common.util.FileUtils;
+import com.ayida.common.util.ResponseUtils;
+
+@Controller
+@RequestMapping(value = "/file/")
+public class FileAct
+{
+	@Autowired
+	private DiseaseService diseaseService;
+	
+	@RequestMapping(value = "disease/excelImport.do", method = RequestMethod.POST)
+	public void fileUpload(@RequestParam MultipartFile excel,
+			HttpServletResponse response) throws IOException,
+			EncryptedDocumentException, InvalidFormatException
+	{
+		InputStream is = excel.getInputStream();
+		String ext = FileUtils.getExts(excel.getOriginalFilename());
+		Workbook workBook = FileUtils.getWorkBook(ext, is);
+		int sheetNum = workBook.getNumberOfSheets();
+		for(int i = 0; i < sheetNum; i++)
+		{
+			extractData(workBook.getSheetAt(i));
+		}
+		ResponseUtils.renderText(response, "ok");
+	}
+	
+	/**
+	 * @param sheet
+	 * @param bean
+	 */
+	private void extractData(Sheet sheet)
+	{
+		Row row = null;
+		int i = 0;
+		Disease bean = null;
+		while (true)
+		{
+			row = sheet.getRow(i);
+			if (null == row)
+				break;
+			bean = new Disease();
+			diseaseService.save(extractData(row, bean));
+			i++;
+		}
+	}
+	
+	private Disease extractData(Row row, Disease bean)
+	{
+		if (null == row)
+			return null;
+		if (null == bean)
+			bean = new Disease();
+		bean.setTypeId(row.getCell(0).getStringCellValue().trim());
+		bean.setName(row.getCell(1).getStringCellValue().trim());
+		return bean;
+	}
+}

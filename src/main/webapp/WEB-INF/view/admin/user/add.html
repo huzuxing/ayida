@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="static/css/jquery.autocomplete.css"/>
+<script type="text/javascript" src="static/js/jquery.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="static/js/jquery.autocomplete.js"></script>
+
+</head>
+<body>
+<div>&nbsp;</div>
+<form action="${base}/ayida/admin/user/save.do" method="POST" id="jvForm">
+	用户名：<input type="text" name="username" /></br>
+	密码：<input type="password" name="password" /></br>
+	是否超级管理员：<input type="radio" name="isSuperRole" value="1">是
+	<input type="radio" name="isSuperRole" value="0"/>否</br>
+	角色：
+	<#if roles??>
+		<#list roles as role>
+			<input type="checkbox" name="roleIds" value="${role.id}"/>${role.name}
+		</#list>
+	</#if>
+	</br>
+	是否禁用：<input type="radio" name="isDisabled" value="0" selected="selected">否
+	<input type="radio" name="isDisabled" value="1"/>是</br>
+	<input type="submit" value="submit"/>
+</form>
+</body>
+</html>

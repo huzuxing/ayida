@@ -1,0 +1,21 @@
+package com.ayida.test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.ayida.common.mybatis.BaseDAO;
+@Repository(value = "authorDao")
+public class AuthorDAOImpl extends BaseDAO implements AuthorDAO
+{
+
+	@Override
+	public Author findById(Integer id)
+	{
+		Map<String, String> map = new HashMap<>();
+		map.put("id", "huzuxing");
+		return sqlSession.selectOne("com.ayida.test.AuthorDAO.findById", map);
+	}
+	
+}

@@ -1,0 +1,154 @@
+package com.ayida.cms.entity.doctor;
+
+import java.math.BigInteger;
+
+public class Doctor extends BaseDoctor
+{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private BigInteger phone;
+	
+	private String email;
+	
+	private String nationality;
+	
+	private Integer cardType;
+	
+	private Integer gender;
+	
+	private String degree;
+	
+	private String cardId;
+	
+	public Doctor()
+	{
+	}
+
+	public Doctor(Integer id, String name, BigInteger phone, String email,
+			String nationality, Integer cardType, Integer gender, String degree)
+	{
+		super(id, name);
+		this.phone = phone;
+		this.email = email;
+		this.nationality = nationality;
+		this.cardType = cardType;
+		this.gender = gender;
+		this.degree = degree;
+	}
+
+	/**
+	 * @return the phone
+	 */
+	public BigInteger getPhone()
+	{
+		return phone;
+	}
+
+	/**
+	 * @param phone the phone to set
+	 */
+	public void setPhone(BigInteger phone)
+	{
+		this.phone = phone;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail()
+	{
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+
+	/**
+	 * @return the nationality
+	 */
+	public String getNationality()
+	{
+		return nationality;
+	}
+
+	/**
+	 * @param nationality the nationality to set
+	 */
+	public void setNationality(String nationality)
+	{
+		this.nationality = nationality;
+	}
+
+	/**
+	 * @return the cardType
+	 */
+	public Integer getCardType()
+	{
+		return cardType;
+	}
+
+	/**
+	 * @param cardType the cardType to set
+	 */
+	public void setCardType(Integer cardType)
+	{
+		this.cardType = cardType;
+	}
+
+	/**
+	 * @return the gender
+	 */
+	public Integer getGender()
+	{
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(Integer gender)
+	{
+		this.gender = gender;
+	}
+
+	/**
+	 * @return the degree
+	 */
+	public String getDegree()
+	{
+		return degree;
+	}
+
+	/**
+	 * @param degree the degree to set
+	 */
+	public void setDegree(String degree)
+	{
+		this.degree = degree;
+	}
+	
+	/**
+	 * @return the cardId
+	 */
+	public String getCardId()
+	{
+		return cardId;
+	}
+
+	/**
+	 * @param cardId the cardId to set
+	 */
+	public void setCardId(String cardId)
+	{
+		this.cardId = cardId;
+	}
+}

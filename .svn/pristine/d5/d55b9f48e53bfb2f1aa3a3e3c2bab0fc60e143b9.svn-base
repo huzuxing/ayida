@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.SearchWordDAO">
+
+	<resultMap type="SearchWord" id="SearchWord">
+		<id property="id" column="search_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="search_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="searchCount" column="search_count" javaType="Integer"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="save" parameterType="SearchWord" useGeneratedKeys="true"
+		keyProperty="id">
+    	<![CDATA[
+    		insert into search_word(search_name, search_count) values(#{name}, #{searchCount});
+    	]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update search_word set search_name=#{searchWord.name}, 
+    		search_count=#{searchWord.searchCount} where 
+    		search_id=#{searchWord.id} 
+    	]]>
+	</update>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="SearchWord">
+    	<![CDATA[
+    		select search_id, search_name, search_count 
+    		from search_word 
+    		where search_name=#{name}
+    	]]>
+	</select>
+</mapper> 

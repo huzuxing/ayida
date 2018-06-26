@@ -1,0 +1,61 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0064)http://www.17sucai.com/preview/137615/2015-01-15/demo/index.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META content="IE=11.0000" http-equiv="X-UA-Compatible">
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<TITLE>登录页面</TITLE>
+<link href="${base}/static/admin/css/login.css" rel="stylesheet" />
+<SCRIPT src="${base}/static/admin/js/jquery-1.9.1.min.js" type="text/javascript"></SCRIPT>
+<SCRIPT type="text/javascript">
+	$(function() {
+		//得到焦点
+		$("#password").focus(function() {
+			$("#left_hand").animate({
+				left : "150",
+				top : " -38"
+			}, {
+				step : function() {
+					if (parseInt($("#left_hand").css("left")) > 140) {
+						$("#left_hand").attr("class", "left_hand");
+					}
+				}
+			}, 2000);
+			$("#right_hand").animate({
+				right : "-64",
+				top : "-38px"
+			}, {
+				step : function() {
+					if (parseInt($("#right_hand").css("right")) > -70) {
+						$("#right_hand").attr("class", "right_hand");
+					}
+				}
+			}, 2000);
+		});
+		//失去焦点
+		$("#password").blur(function() {
+			$("#left_hand").attr("class", "initial_left_hand");
+			$("#left_hand").attr("style", "left:100px;top:-12px;");
+			$("#right_hand").attr("class", "initial_right_hand");
+			$("#right_hand").attr("style", "right:-112px;top:-12px");
+		});
+	});
+
+	function reset()
+	{
+		$("input[name=username]").val("");
+		$("input[type=password]").val("");
+	}
+</SCRIPT>
+
+<META name="GENERATOR" content="MSHTML 11.00.9600.17496">
+</HEAD>
+<BODY>
+	<form action="${base}/file/doctor/excelImport.do" method="post" enctype="multipart/form-data">
+		<input type="file" name="excel"/>
+		<input type="submit" value="上传"/>
+	</form>
+	<a href="logout.do">退出</a>
+</BODY>
+</HTML>

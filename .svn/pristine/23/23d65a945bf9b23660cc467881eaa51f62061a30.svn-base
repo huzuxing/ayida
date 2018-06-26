@@ -1,0 +1,29 @@
+package com.ayida.cms.entity.hotword;
+
+public class SearchWord extends BaseHotWord
+{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private Integer searchCount;
+
+	/**
+	 * @return the searchCount
+	 */
+	public Integer getSearchCount()
+	{
+		return searchCount;
+	}
+
+	/**
+	 * @param searchCount the searchCount to set
+	 */
+	public void setSearchCount(Integer searchCount)
+	{
+		this.searchCount = searchCount;
+	}
+
+}

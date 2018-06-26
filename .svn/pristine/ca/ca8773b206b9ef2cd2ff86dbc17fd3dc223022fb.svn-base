@@ -1,0 +1,172 @@
+package com.ayida.cms.api.member;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.catalina.tribes.group.Response;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ayida.cms.entity.user.User;
+import com.ayida.cms.service.AuthenticationService;
+import com.ayida.cms.service.UserService;
+import com.ayida.common.util.RequestUtils;
+import com.ayida.common.util.ValidationUtils;
+
+@Controller
+@RequestMapping(value = "/api/member/")
+public class MemberAPI
+{
+	private static final String USERNAME_EXISTS = "alreadyRegistered";
+
+	private static final String SUCCESS = "success";
+
+	private static final String CODE_ERROR = "messageCodeError";
+
+	private static final String ERROR_PHONE = "error phone number";
+	
+	private static final String AUTHC_FAILED = "authentication fail";
+
+	private static final Logger log = LoggerFactory.getLogger(MemberAPI.class);
+
+	@RequestMapping(value = "sendMsg.jspx", method = RequestMethod.GET)
+	public void sendMessage(HttpServletRequest request,
+			HttpServletResponse response, String phone)
+	{
+		
+	}
+
+	@RequestMapping(value = "index.jspx", method = RequestMethod.GET)
+	public void index(HttpServletRequest request, HttpServletResponse response,
+			String phone)
+	{
+		
+	}
+
+	@RequestMapping(value = "register.jspx", method = RequestMethod.GET)
+	public String toRegister()
+	{
+		return "front/register";
+	}
+
+	@RequestMapping(value = "login.jspx", method = RequestMethod.GET)
+	public String toLogin()
+	{
+		return "front/login";
+	}
+
+	/**
+	 * register api
+	 * 
+	 * @param request
+	 * @param phone
+	 * @param password
+	 * @param messageCode
+	 * @return
+	 */
+	@RequestMapping(value = "register.jspx", method = RequestMethod.POST)
+	public ResponseEntity<String> register(HttpServletRequest request,
+			String phone, String password, String messageCode)
+	{
+		// check the phone number
+		if (!ValidationUtils.phoneValidate(phone))
+		{
+			return new ResponseEntity<String>(ERROR_PHONE,
+					HttpStatus.FAILED_DEPENDENCY);
+		}
+		// check the user, see whether it exists or not
+		User user = userService.findByUsername(phone);
+		if (null != user)
+		{
+			return new ResponseEntity<String>(USERNAME_EXISTS,
+					HttpStatus.FAILED_DEPENDENCY);
+		}
+		// test messageCode
+		String sessionCode = "123455";
+		if (!sessionCode.equals(messageCode))
+		{
+			return new ResponseEntity<String>(CODE_ERROR,
+					HttpStatus.FAILED_DEPENDENCY);
+		}
+		userService.save(phone, password, phone,
+				RequestUtils.getIpAddr(request));
+		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	}
+
+	/**
+	 * user login api
+	 * 
+	 * @param request
+	 * @param response
+	 * @param phone
+	 * @param password
+	 * @return
+	 */
+	@RequestMapping(value = "login.jspx", method = RequestMethod.POST)
+	public ResponseEntity<String> login(HttpServletRequest request,
+			HttpServletResponse response, String phone, String password)
+	{
+		// check the phone number
+		if (!ValidationUtils.phoneValidate(phone))
+		{
+			return new ResponseEntity<String>(ERROR_PHONE,
+					HttpStatus.FAILED_DEPENDENCY);
+		}
+		Subject subject = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
+		try
+		{
+			subject.login(token);
+			// 当验证登录成功后，将用户的认证基本信息入库
+			authcService.login(phone, password, phone, response, request);
+		}
+		catch (AuthenticationException e)
+		{
+			log.error("Login AuthenticationException" + e.getMessage());
+			return new ResponseEntity<String>(AUTHC_FAILED, HttpStatus.FAILED_DEPENDENCY);
+		}
+		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	}
+
+	/**
+	 * 忘记密码
+	 * @return
+	 */
+	@RequestMapping(value = "forgotPassord.jspx", method = RequestMethod.GET)
+	public String forgotPassword()
+	{
+		return "front/member/forgotpassword";
+	}
+	
+	/**
+	 * 重置密码api
+	 * @param newPassword
+	 * @return
+	 */
+	@RequestMapping(value = "resetPassword.jspx", method = RequestMethod.POST)
+	public ResponseEntity<String> resetPassword(String username, String newPassword)
+	{
+		User user = userService.findByUsername(username);
+		if (null != null)
+		{
+			//userService
+		}
+		return new ResponseEntity<String>("", HttpStatus.OK);
+	}
+	
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private AuthenticationService authcService;
+}

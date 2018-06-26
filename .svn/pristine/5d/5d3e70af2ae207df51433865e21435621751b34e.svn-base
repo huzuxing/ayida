@@ -1,0 +1,24 @@
+#mysql \u6570\u636E\u6E90\u914D\u7F6E
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://127.0.0.1:3306/ayida?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+jdbc.username=root
+jdbc.password=1234
+
+druid.initialSize=10
+druid.maxActive=20
+druid.minIdle=5
+druid.maxWait=60000
+druid.removeAbandoned=true
+druid.removeAbandonedTimeout=1800
+druid.logAbandoned=true
+druid.timeBetweenEvictionRunsMillis=60000
+druid.minEvictableIdleTimeMillis=300000
+druid.testWhileIdle=true
+druid.validationQuery=SELECT 'x'
+druid.testOnBorrow=false
+druid.testOnReturn=false
+druid.poolPreparedStatements=true
+druid.maxPoolPreparedStatementPerConnectionSize=50
+druid.filters=stat
+
+# the default admin password is ayida15720

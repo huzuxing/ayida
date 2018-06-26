@@ -1,0 +1,36 @@
+package com.ayida.cms.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ayida.cms.dao.RoleDAO;
+import com.ayida.cms.entity.role.Role;
+import com.ayida.cms.service.RoleService;
+
+@Service(value = "roleService")
+public class RoleServiceImpl implements RoleService
+{	
+	@Autowired
+	private RoleDAO roleDao;
+	
+	@Override
+	public Integer save(Role bean)
+	{
+		roleDao.save(bean);
+		return bean.getId();
+	}
+
+	@Override
+	public Role getRoleByRoleName(String name)
+	{
+		return roleDao.getRoleByRoleName(name);
+	}
+
+	@Override
+	public Role getRoleById(Integer id)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

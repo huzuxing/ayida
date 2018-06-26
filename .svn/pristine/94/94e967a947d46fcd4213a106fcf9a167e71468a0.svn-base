@@ -1,0 +1,55 @@
+package com.ayida.cms.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ayida.cms.dao.DiseaseDAO;
+import com.ayida.cms.entity.disease.Disease;
+import com.ayida.cms.service.DiseaseService;
+import com.ayida.common.mybatis.Pager;
+
+@Service(value = "diseaseService")
+public class DiseaseServiceImpl implements DiseaseService
+{
+	@Autowired
+	private DiseaseDAO diseaseDao;
+
+	@Override
+	public Disease save(Disease bean)
+	{
+		return diseaseDao.save(bean);
+	}
+
+	@Override
+	public Disease findById(Integer id)
+	{
+		return diseaseDao.findById(id);
+	}
+
+	@Override
+	public int updateBean(Disease bean)
+	{
+		return diseaseDao.updateBean(bean);
+	}
+
+	@Override
+	public int deleteById(Integer id)
+	{
+		return diseaseDao.deleteById(id);
+	}
+
+	@Override
+	public List<Disease> getAllDisease()
+	{
+		return diseaseDao.getAllDisease();
+	}
+
+	@Override
+	public List<Disease> getDiseasePagerList(Pager pager)
+	{
+		return diseaseDao.getDiseasePagerList(pager);
+	}
+
+}

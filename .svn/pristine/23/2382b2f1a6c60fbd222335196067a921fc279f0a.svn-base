@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.SubProfessionalDAO">
+
+	<resultMap type="SubProfessional" id="SubProfessional">
+		<id property="id" column="sub_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="sub_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="typeId" column="type_id" javaType="String" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<insert id="save" parameterType="SubProfessional" useGeneratedKeys="true"
+		keyProperty="id">
+    	<![CDATA[
+    		insert into sub_professional(sub_name, type_id) values(#{name}, #{typeId})
+    	]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update sub_professional set sub_name=#{bean.name}, type_id=#{bean.typeId} 
+    		where sub_id=#{bean.id} 
+    	]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from sub_professional where sub_id=#{id}
+    	]]>
+	</delete>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="SubProfessional">
+    	<![CDATA[
+    		select sub_id, sub_name, type_id from disease 
+    		where sub_name=#{name}
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="Disease">
+    	<![CDATA[
+    		select sub_id, sub_name, type_id from sub_professional  
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="SubProfessional">
+    	<![CDATA[
+    		select sub_id, sub_name from sub_professional  
+    		where sub_id=#{id}
+    	]]>
+	</select>
+</mapper> 

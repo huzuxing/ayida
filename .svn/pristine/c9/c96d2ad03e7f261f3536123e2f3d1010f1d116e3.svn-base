@@ -1,0 +1,303 @@
+/*
+MySQL Data Transfer
+Source Host: localhost
+Source Database: ayida
+Target Host: localhost
+Target Database: ayida
+Date: 2015/7/24 13:56:44
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+-- ----------------------------
+-- Table structure for admin_user
+-- ----------------------------
+DROP TABLE IF EXISTS `admin_user`;
+CREATE TABLE `admin_user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `passsword` char(32) NOT NULL,
+  `last_login_ip` int(11) unsigned DEFAULT NULL,
+  `last_login_time` timestamp NULL DEFAULT NULL,
+  `login_count` int(11) DEFAULT NULL,
+  `error_time` timestamp NULL DEFAULT NULL,
+  `error_count` int(11) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='后台管理员表';
+
+-- ----------------------------
+-- Table structure for authentication
+-- ----------------------------
+DROP TABLE IF EXISTS `authentication`;
+CREATE TABLE `authentication` (
+  `authentication_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '认证ID',
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `username` varchar(100) NOT NULL COMMENT '用户名',
+  `login_ip` int(11) unsigned NOT NULL COMMENT '登录IP',
+  `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '登录时间',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
+  PRIMARY KEY (`authentication_id`),
+  KEY `fk_authentication` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='认证信息表';
+
+-- ----------------------------
+-- Table structure for disease_type
+-- ----------------------------
+DROP TABLE IF EXISTS `disease_type`;
+CREATE TABLE `disease_type` (
+  `type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='疾病归类表';
+
+-- ----------------------------
+-- Table structure for doctor
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor`;
+CREATE TABLE `doctor` (
+  `doctor_id` int(11) NOT NULL AUTO_INCREMENT,
+  `doctor_name` varchar(20) NOT NULL,
+  `phone` bigint(20) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `nationality` varchar(20) DEFAULT NULL COMMENT '民族',
+  `card_type` tinyint(1) DEFAULT NULL COMMENT '证件类型',
+  `card_id` varchar(50) DEFAULT NULL COMMENT '证件ID',
+  `gender` tinyint(1) DEFAULT NULL COMMENT '性别',
+  `degree` varchar(50) DEFAULT NULL COMMENT '学历',
+  PRIMARY KEY (`doctor_id`),
+  UNIQUE KEY `doctor_id_index` (`doctor_id`),
+  KEY `doctor_index` (`doctor_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词点击统计表';
+
+-- ----------------------------
+-- Table structure for doctor_ext
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor_ext`;
+CREATE TABLE `doctor_ext` (
+  `doctor_id` int(11) NOT NULL,
+  `doctor_name` varchar(20) NOT NULL,
+  `department` varchar(100) DEFAULT NULL COMMENT '医生科室',
+  `job` tinyint(1) DEFAULT NULL COMMENT '职务',
+  `professional_titles` tinyint(1) DEFAULT NULL COMMENT '职称',
+  `skilled_field` varchar(100) DEFAULT NULL COMMENT '擅长领域',
+  `certification` varchar(100) DEFAULT NULL COMMENT '执业医师证',
+  `comments` varchar(100) DEFAULT NULL COMMENT '外科医生写明擅长设备',
+  `doctor_img` varchar(100) DEFAULT NULL COMMENT '医生头像',
+  PRIMARY KEY (`doctor_id`),
+  KEY `doctor_index` (`doctor_name`),
+  CONSTRAINT `fk_doctor_ext_ayida` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词点击统计表';
+
+-- ----------------------------
+-- Table structure for doctor_hospital
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor_hospital`;
+CREATE TABLE `doctor_hospital` (
+  `doctor_id` int(11) NOT NULL COMMENT '医生ID',
+  `hospital_id` int(11) NOT NULL COMMENT '医院ID',
+  PRIMARY KEY (`doctor_id`,`hospital_id`),
+  KEY `fk_hospital_doctor_ayida` (`hospital_id`),
+  CONSTRAINT `fk_doctor_hospital_ayida` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_hospital_doctor_ayida` FOREIGN KEY (`hospital_id`) REFERENCES `hospital` (`hospital_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='医生医院关联表';
+
+-- ----------------------------
+-- Table structure for doctor_statistic
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor_statistic`;
+CREATE TABLE `doctor_statistic` (
+  `doctor_id` int(11) NOT NULL,
+  `doctor_name` varchar(20) NOT NULL,
+  `day_count` int(11) DEFAULT NULL,
+  `week_count` int(11) DEFAULT NULL,
+  `month_count` int(11) DEFAULT NULL,
+  `year_count` int(11) DEFAULT NULL,
+  `total_count` int(11) DEFAULT NULL,
+  `push_count` int(11) DEFAULT NULL COMMENT '医生显示次数',
+  PRIMARY KEY (`doctor_id`),
+  CONSTRAINT `fk_doctor_static` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词点击统计表';
+
+-- ----------------------------
+-- Table structure for doctor_user_collection
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor_user_collection`;
+CREATE TABLE `doctor_user_collection` (
+  `user_id` int(11) NOT NULL,
+  `doctor_id` int(11) NOT NULL,
+  KEY `doctor_user_collection_index` (`user_id`),
+  KEY `fk_doctor_user` (`doctor_id`),
+  CONSTRAINT `doctor_user_collection_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_doctor_user` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收藏医生表';
+
+-- ----------------------------
+-- Table structure for hospital
+-- ----------------------------
+DROP TABLE IF EXISTS `hospital`;
+CREATE TABLE `hospital` (
+  `hospital_id` int(11) NOT NULL AUTO_INCREMENT,
+  `hospital_name` varchar(20) NOT NULL,
+  `longitude` double(10,6) DEFAULT NULL,
+  `latitude` double(10,6) DEFAULT NULL,
+  `address` varchar(100) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`hospital_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词点击统计表';
+
+-- ----------------------------
+-- Table structure for hot_word
+-- ----------------------------
+DROP TABLE IF EXISTS `hot_word`;
+CREATE TABLE `hot_word` (
+  `word_id` int(11) NOT NULL AUTO_INCREMENT,
+  `word_name` varchar(20) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`word_id`),
+  UNIQUE KEY `word_name` (`word_name`),
+  KEY `index_parent_id` (`parent_id`),
+  CONSTRAINT `fk_hot_word` FOREIGN KEY (`parent_id`) REFERENCES `hot_word` (`word_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词表';
+
+-- ----------------------------
+-- Table structure for hot_word_statistic
+-- ----------------------------
+DROP TABLE IF EXISTS `hot_word_statistic`;
+CREATE TABLE `hot_word_statistic` (
+  `word_id` int(11) NOT NULL,
+  `word_name` varchar(20) NOT NULL,
+  `day_count` int(11) DEFAULT NULL,
+  `week_count` int(11) DEFAULT NULL,
+  `month_count` int(11) DEFAULT NULL,
+  `year_count` int(11) DEFAULT NULL,
+  `total_count` int(11) DEFAULT NULL,
+  UNIQUE KEY `word_name_index` (`word_name`),
+  KEY `word_id` (`word_id`),
+  CONSTRAINT `hot_word_statistic_ibfk_1` FOREIGN KEY (`word_id`) REFERENCES `hot_word` (`word_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热词点击统计表';
+
+-- ----------------------------
+-- Table structure for new_word
+-- ----------------------------
+DROP TABLE IF EXISTS `new_word`;
+CREATE TABLE `new_word` (
+  `newWord_id` int(11) NOT NULL AUTO_INCREMENT,
+  `newWord_name` varchar(100) NOT NULL,
+  `newWord_count` int(11) DEFAULT NULL,
+  PRIMARY KEY (`newWord_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='疾病归类表';
+
+-- ----------------------------
+-- Table structure for role
+-- ----------------------------
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
+  `role_name` varchar(20) NOT NULL COMMENT '角色名称',
+  `is_super` tinyint(1) NOT NULL COMMENT '是否超级角色，拥有所有权限',
+  PRIMARY KEY (`role_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色表';
+
+-- ----------------------------
+-- Table structure for role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `role_permission`;
+CREATE TABLE `role_permission` (
+  `role_id` int(11) NOT NULL,
+  `uri` varchar(100) NOT NULL,
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色权限表';
+
+-- ----------------------------
+-- Table structure for search_word
+-- ----------------------------
+DROP TABLE IF EXISTS `search_word`;
+CREATE TABLE `search_word` (
+  `search_id` int(11) NOT NULL AUTO_INCREMENT,
+  `search_name` varchar(100) DEFAULT NULL,
+  `search_count` int(11) DEFAULT NULL,
+  PRIMARY KEY (`search_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='搜索词统计';
+
+-- ----------------------------
+-- Table structure for syslog
+-- ----------------------------
+DROP TABLE IF EXISTS `syslog`;
+CREATE TABLE `syslog` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `category` int(11) NOT NULL COMMENT '日志类型',
+  `log_time` timestamp NULL DEFAULT NULL COMMENT '日志时间',
+  `log_ip` int(11) unsigned DEFAULT NULL COMMENT '日志IP',
+  `log_url` varchar(255) NOT NULL COMMENT '日志uri',
+  `log_title` varchar(255) NOT NULL COMMENT '日志名称',
+  `log_content` varchar(255) NOT NULL COMMENT '日志内容',
+  PRIMARY KEY (`log_id`),
+  KEY `log_user_index` (`user_id`),
+  CONSTRAINT `fk_log_user` FOREIGN KEY (`user_id`) REFERENCES `admin_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台管理日志表';
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `username` varchar(100) NOT NULL COMMENT '用户名',
+  `password` varchar(32) NOT NULL COMMENT '用户登录密码',
+  `phone` bigint(20) NOT NULL COMMENT '用户手机号',
+  `register_ip` int(11) unsigned NOT NULL COMMENT '用户注册IP',
+  `register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '用户注册时间',
+  `last_login_ip` int(11) unsigned DEFAULT NULL COMMENT '用户最后登陆录IP',
+  `last_login_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '用户最后登录时间',
+  `login_count` int(11) DEFAULT NULL COMMENT '用户登录次数',
+  `login_role` tinyint(1) DEFAULT NULL COMMENT '用户登录角色',
+  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '用户信息更新时间',
+  `is_disabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否禁用',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `phone` (`phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='前端用户表';
+
+-- ----------------------------
+-- Table structure for user_doctor
+-- ----------------------------
+DROP TABLE IF EXISTS `user_doctor`;
+CREATE TABLE `user_doctor` (
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `doctor_id` int(11) NOT NULL COMMENT '医生ID',
+  PRIMARY KEY (`user_id`,`doctor_id`),
+  KEY `fk_doctor_user_ayida` (`doctor_id`),
+  CONSTRAINT `user_doctor_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_doctor_user_ayida` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`doctor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收藏医生关联表';
+
+-- ----------------------------
+-- Table structure for user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `index_user_role` (`user_id`),
+  KEY `fk_role_user` (`role_id`),
+  CONSTRAINT `user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_role_user` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色关联表';
+
+-- ----------------------------
+-- Records 
+-- ----------------------------
+INSERT INTO `admin_user` VALUES ('1', 'ayidaadmin', '1341170a72c730439a633b2870977e28', null, null, null, null, null);
+INSERT INTO `role` VALUES ('1', '会员', '0');
+INSERT INTO `role` VALUES ('2', '一般管理员', '0');
+INSERT INTO `role_permission` VALUES ('1', '/member/login.jspx');
+INSERT INTO `role_permission` VALUES ('2', '/test.jspx');
+INSERT INTO `user` VALUES ('25', '13808221062', '202cb962ac59075b964b07152d234b70', '13808221062', '2130706433', '2015-07-24 11:31:22', null, '0000-00-00 00:00:00', null, null, '0000-00-00 00:00:00', '1');
+INSERT INTO `user` VALUES ('26', '13808221061', '202cb962ac59075b964b07152d234b70', '13808221061', '2130706433', '2015-07-24 11:35:34', null, '0000-00-00 00:00:00', null, null, '0000-00-00 00:00:00', '1');
+INSERT INTO `user` VALUES ('29', '13808221063', '202cb962ac59075b964b07152d234b70', '13808221063', '2130706433', '2015-07-24 13:10:40', null, '0000-00-00 00:00:00', null, null, '0000-00-00 00:00:00', '1');
+INSERT INTO `user` VALUES ('30', '18708135317', '202cb962ac59075b964b07152d234b70', '18708135317', '3232235622', '2015-07-24 13:21:23', null, '0000-00-00 00:00:00', null, null, '0000-00-00 00:00:00', '1');
+INSERT INTO `user_role` VALUES ('29', '1');
+INSERT INTO `user_role` VALUES ('30', '1');

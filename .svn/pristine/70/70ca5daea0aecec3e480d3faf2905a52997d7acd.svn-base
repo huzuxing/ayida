@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.DoctorDAO">
+
+	<resultMap type="Doctor" id="BasicDoctor">
+		<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="doctor_name" javaType="String" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" javaType="java.math.BigInteger" jdbcType="BIGINT" />
+		<result property="email" column="email" javaType="String" jdbcType="VARCHAR" />
+		<result property="nationality" column="nationality" javaType="String" jdbcType="VARCHAR" />
+		<result property="cardType" column="card_type" javaType="Integer" jdbcType="INTEGER" />
+		<result property="gender" column="gender" javaType="Integer" jdbcType="TINYINT" />
+		<result property="degree" column="degree" javaType="String" jdbcType="VARCHAR" />
+		<result property="cardId" column="card_id" javaType="String" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap type="Doctor" id="Doctor">
+		<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="doctor_name" javaType="String" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" javaType="java.math.BigInteger" jdbcType="BIGINT" />
+		<result property="email" column="email" javaType="String" jdbcType="VARCHAR" />
+		<result property="nationality" column="nationality" javaType="String" jdbcType="VARCHAR" />
+		<result property="cardType" column="card_type" javaType="Integer" jdbcType="INTEGER" />
+		<result property="gender" column="gender" javaType="Integer" jdbcType="TINYINT" />
+		<result property="degree" column="degree" javaType="String" jdbcType="VARCHAR" />
+		<result property="cardId" column="card_id" javaType="String" jdbcType="VARCHAR" />
+		<association property="doctorExt" javaType="DoctorExt">
+			<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER"/>
+			<result property="name" column="doctor_name" javaType="String" jdbcType="VARCHAR"/>
+			<result property="job" column="job" javaType="Integer" jdbcType="TINYINT"/>
+			<result property="department" column="department" javaType="String" jdbcType="VARCHAR"/>
+			<result property="professionalTitles" column="professional_titles" javaType="String" jdbcType="VARCHAR"/>
+			<result property="skilledField" column="skilled_field" javaType="String" jdbcType="VARCHAR"/>
+			<result property="certification" column="certification" javaType="String" jdbcType="VARCHAR"/>
+			<result property="comment" column="comments" javaType="String" jdbcType="VARCHAR"/>
+			<result property="img" column="doctor_img" javaType="String" jdbcType="VARCHAR"/>
+		</association>
+	</resultMap>
+
+	<insert id="save" parameterType="Doctor" useGeneratedKeys="true" keyProperty="id">
+		<![CDATA[
+			insert into doctor(doctor_name, phone, email, nationality, card_type, 
+			card_id, gender, degree) values(#{name}, #{phone}, #{email}, #{nationality}, 
+			#{cardType}, #{cardId}, #{gender}, #{degree})
+		]]>
+	</insert>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="Doctor">
+    	<![CDATA[
+    		select doctor_id, doctor_name, phone, email, nationality, card_type, gender, degree, card_id 
+    		from doctor 
+    		where doctor_id=#{id}
+    	]]>
+	</select>
+	
+	<select id="getDoctorDetails"></select>
+	
+	<select id="getDoctorsByUserId" parameterType="java.util.Map" resultMap="BasicDoctor">
+    	<![CDATA[
+    		select d.doctor_id, 
+    		d.doctor_name, 
+    		d.phone, 
+    		d.email, 
+    		d.nationality, 
+    		d.card_type, 
+    		d.gender, 
+    		d.degree, 
+    		d.card_id 
+    		from user_doctor ud 
+    		left join doctor d on ud.doctor_id = d.doctor_id
+    		where ud.user_id=#{id}
+    	]]>
+	</select>
+
+	<select id="findByIdOrDiseaseId" parameterType="java.util.Map" resultMap="Doctor">
+    	<![CDATA[
+    		select d.doctor_id as doctor_id, 
+    		d.doctor_name as doctor_name, 
+    		d.phone as phone, 
+    		d.email as email, 
+    		d.nationality as nationality, 
+    		d.card_type as card_type, 
+    		d.gender as gender, 
+    		d.degree as degree, 
+    		d.card_id as card_id, 
+    		de.department as department, 
+    		de.job as job, 
+    		de.professional_titles as professional_titles, 
+    		de.skilled_field as skilled_field, 
+    		de.certification as certification, 
+    		de.comments as comments, 
+    		de.doctor_img as doctor_img 
+    		from doctor d 
+    		left join doctor_ext de on d.doctor_id = de.doctor_id 
+    		left join doctor_disease dd on d.doctor_id = dd.doctor_id 
+    		left join disease di on dd.disease_id = di.disease_id 
+    		where di.disease_id=#{id}
+    	]]>
+	</select>
+</mapper> 

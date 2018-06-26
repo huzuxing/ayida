@@ -1,0 +1,202 @@
+@charset "utf-8";
+em{font-style:normal;}
+.body-bg02 ul{list-style:none outside none;padding:0;margin:0;}
+.conditions {
+	margin: auto;
+	padding: 0;
+    margin-bottom: 0;
+    list-style: none;
+	clear:both;
+}
+.conditions li {
+	list-style:none;
+	float:left;
+	position: relative;
+	margin-bottom: -1px;
+}
+.conditions li a{
+	margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+	display: block;
+    padding: 10px 15px;
+	color: #337ab7;
+	text-decoration: none;
+}
+.conditions li b{
+	position: absolute;
+	overflow: hidden;
+    width: 0px;
+    height: 0px;
+	top: 19px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #2C8ED3;
+}
+.conditions .city_select_triangle {
+	position: absolute;
+	overflow: hidden;
+    width: 0px;
+    height: 0px;
+	top: 41px;
+	right: 34px;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #2C8ED3;
+}
+.conditions .more_item_triangle {
+	position: absolute;
+	overflow: hidden;
+    width: 0px;
+    height: 0px;
+	top: 41px;
+	right: 20px;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #2C8ED3;
+}
+.conditions .city_select {
+	display: block;
+    position: absolute;
+    top: 50px;
+    left: -45px;
+    border: 1px solid #2C8ED3;
+    width: 442px;
+    padding: 15px;
+    background: #fff;
+    -moz-box-shadow: 0 0 5px #ddd;
+    -webkit-box-shadow: 0 0 5px #ddd;
+    box-shadow: 0 0 5px #ddd;
+}
+.conditions .item_select {
+	display: block;
+    position: absolute;
+    top: 50px;
+    left: 18px;
+    border: 1px solid #2C8ED3;
+    width: 125px;
+    padding: 15px;
+    background: #fff;
+    -moz-box-shadow: 0 0 5px #ddd;
+    -webkit-box-shadow: 0 0 5px #ddd;
+    box-shadow: 0 0 5px #ddd;
+}
+.conditions .select_close {
+	position: absolute;
+    z-index: 2;
+    top: 45px;
+    left: 387px;
+    cursor: pointer;
+    width: 17px;
+    height: 17px;
+    background: url(../images/20120418.png) no-repeat -40px 0;
+}
+.conditions p {
+	color: #337ab7;
+}
+.prov .select_tab {
+	width: 100%;
+    height: 25px;
+    float: left;
+    border-bottom: 2px solid #2C8ED3;
+    overflow: visible;
+}
+.prov .select_tab  li {
+	float: left;
+    clear: none;
+    height: 23px;
+    padding: 1px 1px 0;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    margin-right: 3px;
+    background-color: #fff;
+    line-height: 22px;
+    text-decoration: none;
+}
+.prov .select_tab a {
+	position: relative;
+    float: left;
+    height: 23px;
+    padding: 0 20px 1px 10px;
+    line-height: 23px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    color: #005AA0;
+    outline: 0;
+}
+.prov .select_tab .curr {
+	height: 25px;
+    padding: 0;
+    border: 2px solid #2C8ED3;
+    border-bottom: 0;
+}
+.conditions .prov .select_tab li a i {
+	position: absolute;
+    right: 5px;
+    top: 10px;
+    display: block;
+    width: 7px;
+    height: 5px;
+    overflow: hidden;
+    background: url(../images/20130606B.png) no-repeat -76px -34px;
+    opacity: .5;
+    filter: alpha(opacity=50);
+}
+.city_select .select-list{s
+	padding-top: 5px;
+}
+.city_select .select-list li{
+	float: left;
+    width: 95px;
+    padding: 2px 0 2px 15px;
+    clear: none;
+}
+.city_select .select-list  li  a{
+	float: left;
+    padding: 2px 4px;
+    color: #005aa0;
+}
+.city_select .select-list  .longer-area {
+	width: 370px;
+}
+.city_select .select-list  .long-area {
+	width: 97px;
+}
+
+.select-hover, .item_select li:hover, #select-prov-list li a:hover{
+	background-color: #EEEEEE;
+}
+.item_select ul {
+	height: 150px;
+}
+.item_select li {
+	width: 95px;
+	height: 35px;
+	font-size: 14px;
+	overflow: hidden;
+}
+.item_select li a{
+	padding-top: 6px;
+}
+.item_select .sure {
+	width: 100%;
+	border: none;
+	padding: 0;
+    text-transform: uppercase;
+    width: 100%;
+    height: 35px;
+	background-color: #B0DD7E;
+	text-decoration: none;
+	cursor: pointer;
+	overflow: hidden;
+}
+.item_select div{
+	height: 35px;
+	overflow: hidden;
+}
+.item_select div span {
+	padding-left:0px;
+	overflow: hidden;
+}

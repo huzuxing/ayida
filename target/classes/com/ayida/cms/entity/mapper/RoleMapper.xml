@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+   
+<mapper namespace="com.ayida.cms.dao.RoleDAO">  
+	
+	<resultMap type="Role" id="Role">
+		<id property="id" column="role_id" javaType="Integer" jdbcType="INTEGER"/>
+		<result property="name" column="role_name" javaType="String" jdbcType="VARCHAR"/>
+		<result property="isSuper" column="is_super" javaType="Integer" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<insert id="save" parameterType="Role">
+		<![CDATA[
+			insert into role(role_id, role_name, is_super) 
+			values(#{id}, #{name}, #{isSuper}) 
+		]]>
+	</insert>
+	
+	<select id="getRoleByRoleName" parameterType="java.util.Map" resultMap="Role">
+		<![CDATA[
+			select role_id, role_name, is_super 
+			from role where role_name=#{rolename} 
+		]]>
+	</select>
+	
+	<select id="getById" parameterType="java.util.Map" resultMap="Role">
+		<![CDATA[
+			select 
+			r.role_id as role_id, 
+			r.role_name as role_name, 
+			r.is_super as is_super 
+			from role r 
+			where r.role_id = #{id} 
+		]]>
+	</select>
+	
+	<select id="getAll" resultMap="Role">
+		<![CDATA[
+			select role_id, role_name, is_super from role 
+		]]>
+	</select>
+</mapper> 

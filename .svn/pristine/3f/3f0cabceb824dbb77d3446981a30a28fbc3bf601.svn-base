@@ -1,0 +1,83 @@
+package com.ayida.cms.dao.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.ayida.cms.dao.DoctorDAO;
+import com.ayida.cms.entity.doctor.Doctor;
+import com.ayida.common.mybatis.BaseDAO;
+import com.ayida.common.mybatis.Pager;
+
+@Repository(value = "docDao")
+public class DoctorDAOImpl extends BaseDAO<Doctor> implements DoctorDAO
+{
+
+	private static final String DOCTORDAO = "com.ayida.cms.dao.DoctorDAO.";
+
+	@Override
+	public Doctor save(Doctor bean)
+	{
+		return super.save(bean);
+	}
+
+	@Override
+	public Doctor findById(Integer id)
+	{
+		return get(getIdMap(id));
+	}
+
+	@Override
+	public List<Doctor> getCollectedDoctorsByUserId(Integer userId)
+	{
+		return sqlSession.selectList(getMethodPath("getDoctorsByUserId"),
+				getIdMap(userId));
+	}
+
+	public int updateBean(Doctor bean)
+	{
+		Map<String, Doctor> map = new HashMap<String, Doctor>();
+		map.put("doctor", bean);
+		return update(map);
+	}
+
+	@Override
+	public int deleteById(Integer id)
+	{
+		return delete(getIdMap(id));
+	}
+
+	@Override
+	public List<Doctor> getAllDoctors()
+	{
+		return getAll();
+	}
+
+	@Override
+	public List<Doctor> getDoctorPagerList(Pager pager)
+	{
+		return getPagerList(pager);
+	}
+
+	@Override
+	protected String getMethodPath(String methodName)
+	{
+		return DOCTORDAO + methodName;
+	}
+
+	@Override
+	protected Map<String, Integer> getIdMap(Integer id)
+	{
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("id", id);
+		return map;
+	}
+
+	@Override
+	public Doctor findByIdOrDiseaseId(Integer id)
+	{
+		return sqlSession.selectOne(getMethodPath("findByIdOrDiseaseId"), getIdMap(id));
+	}
+}

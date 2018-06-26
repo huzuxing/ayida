@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.DepartmentDAO">
+
+	<resultMap type="Department" id="Department">
+		<id property="id" column="department_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="department_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="description" column="description" javaType="String" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<insert id="save" parameterType="Department" useGeneratedKeys="true"
+		keyProperty="id">
+    	<![CDATA[
+    		insert into department(department_name, description) values(#{name}, #{description})
+    	]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update department set department_name=#{bean.name}, type_id=#{bean.description} 
+    		where department_id=#{bean.id} 
+    	]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from department where department_id=#{id}
+    	]]>
+	</delete>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="Department">
+    	<![CDATA[
+    		select department_id, department_name, description from department 
+    		where department_name=#{name}
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="Department">
+    	<![CDATA[
+    		select department_id, department_name, description from Department  
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="Department">
+    	<![CDATA[
+    		select department_id, department_name, description from Department  
+    		where department_id=#{id}
+    	]]>
+	</select>
+	
+	<select id="getPagerList" parameterType="Pager" resultMap="Department">
+    	<![CDATA[
+    		select * from Department
+    	]]>
+	</select>
+</mapper> 

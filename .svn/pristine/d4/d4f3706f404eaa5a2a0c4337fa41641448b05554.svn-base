@@ -1,0 +1,162 @@
+package com.ayida.cms.lucene;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ayida.cms.entity.hotword.RelativeSearchWord;
+import com.ayida.common.util.LuceneUtils;
+
+public class LuceneContent
+{
+	private static final Logger log = LoggerFactory
+			.getLogger(LuceneContent.class);
+
+	public static final String ID = "id";
+
+	public static final String NAME = "name";
+
+	public static final String NAMEINITIAL = "nameInitial";
+
+	public static final String[] QUERY_FIELD = {NAME, NAMEINITIAL};
+
+	public static final BooleanClause.Occur[] QUERY_FLAGS = {
+			BooleanClause.Occur.SHOULD, BooleanClause.Occur.SHOULD};
+
+	/**
+	 * 创建lucene格式的document
+	 * 
+	 * @param doctor
+	 *            医生对象
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static Document createDocument(RelativeSearchWord word)
+	{
+		if (null == word)
+		{
+			throw new IllegalArgumentException(
+					"RelativeSearchWord can not be null in createDocument");
+		}
+		Document doc = new Document();
+		doc.add(new Field(ID, word.getId().toString(), Store.YES,
+				Index.NOT_ANALYZED));
+		doc.add(new Field(NAME, word.getName(), Store.YES, Index.ANALYZED));
+		doc.add(new Field(NAMEINITIAL, word.getNameInitial(), Store.YES,
+				Index.ANALYZED));
+		return doc;
+	}
+
+	/**
+	 * 删除索引
+	 * 
+	 * @param doctorId
+	 * @param writer
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public static void delete(Integer id, IndexWriter writer)
+			throws IOException, ParseException
+	{
+		// writer.deleteDocuments(createQuery(null, doctorId, null));
+		// writer.deleteDocuments(new Term(ID, doctorId.toString()));
+		// 调用LuceneUtils工具类删除索引
+		LuceneUtils.deleteIndex(writer, ID, id.toString());
+	}
+
+	/**
+	 * 创建Query查询
+	 * 
+	 * @param queryString
+	 * @param doctorId
+	 * @param analyzer
+	 * @return
+	 * @throws ParseException
+	 */
+	public static Query createQuery(String queryString, Integer id,
+			Analyzer analyzer) throws ParseException
+	{
+		BooleanQuery bq = new BooleanQuery();
+		Query q;
+		if (StringUtils.isNotBlank(queryString))
+		{
+			q = MultiFieldQueryParser.parse(queryString, QUERY_FIELD,
+					QUERY_FLAGS, analyzer);
+			bq.add(q, BooleanClause.Occur.MUST);
+		}
+		if (null != id)
+		{
+			q = new TermQuery(new Term(ID, id.toString()));
+			bq.add(q, BooleanClause.Occur.MUST);
+		}
+		return bq;
+	}
+
+	/**
+	 * 获取id集合，便于从数据库查询信息
+	 * 
+	 * @param searcher
+	 * @param topDocs
+	 * @param first
+	 * @param max
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<Integer> getResultIdsList(IndexSearcher searcher,
+			TopDocs topDocs, Integer first, Integer max) throws IOException
+	{
+		/** 声明一个指定大小的ArrayList **/
+		List<Integer> idsList = new ArrayList<Integer>(max);
+		ScoreDoc[] docs = topDocs.scoreDocs;
+		if (null == first || first < 0)
+		{
+			first = 0;
+		}
+		if (null == max || max < 0)
+		{
+			max = 0;
+		}
+		int last = first + max;
+		int len = docs.length;
+		if (last > len)
+		{
+			last = len;
+		}
+		/** 这里将Integer.valueOf方法try-catch，规范 **/
+		try
+		{
+			for (int i = 0; i < last; i++)
+			{
+				Document doc = searcher.doc(docs[i].doc);
+				idsList.add(Integer.valueOf(doc.getField(ID).stringValue()));
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			log.error("Integer.valuerOf(doc.getField(ID).stringValue():error number String):"
+					+ e.getMessage());
+			throw new RuntimeException(e);
+		}
+		return idsList;
+	}
+}

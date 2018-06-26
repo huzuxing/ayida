@@ -1,0 +1,104 @@
+package com.ayida.common.mybatis;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * 通用父类，提供通用操作
+ * 
+ * @author John Hu
+ *
+ * @param <T>
+ */
+public abstract class BaseDAO<T>
+{
+	@Autowired
+	protected SqlSessionTemplate sqlSession;
+
+	protected final static String SAVE = "save";
+
+	protected final static String GETBYID = "getById";
+
+	protected final static String DELETEBYID = "deleteById";
+
+	protected final static String QUERYPAGERLIST = "getPagerList";
+
+	protected final static String GETALL = "getAll";
+
+	protected final static String UPDATE = "update";
+
+	/**
+	 * 持久化对象
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	protected T save(T bean)
+	{
+		sqlSession.insert(getMethodPath(SAVE), bean);
+		return bean;
+	}
+
+	/**
+	 * 获得指定的持久化对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected T get(java.util.Map<String, Integer> map)
+	{
+		return sqlSession.selectOne(getMethodPath(GETBYID), map);
+	}
+
+	/**
+	 * 删除指定对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected int delete(java.util.Map<String, Integer> map)
+	{
+		return sqlSession.delete(getMethodPath(DELETEBYID), map);
+	}
+
+	/**
+	 * 更新持久化对象
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected int update(java.util.Map<String, ? extends Object> map)
+	{
+		return sqlSession.update(getMethodPath(UPDATE), map);
+	}
+
+	/**
+	 * 分页获取持久对象集合
+	 * 
+	 * @param pager
+	 * @return
+	 */
+	protected List<T> getPagerList(Pager pager)
+	{
+		return sqlSession.selectList(getMethodPath(QUERYPAGERLIST), null,
+				new RowBounds(pager.getPrePage(), pager.getPageSize()));
+	}
+
+	/**
+	 * 获得所有持久对象
+	 * 
+	 * @return
+	 */
+	protected List<T> getAll()
+	{
+		return sqlSession.selectList(getMethodPath(GETALL));
+	}
+
+	abstract protected String getMethodPath(String methodName);
+
+	abstract protected Map<String, Integer> getIdMap(Integer id);
+}

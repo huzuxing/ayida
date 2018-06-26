@@ -1,0 +1,39 @@
+package com.ayida.cms.entity.hotword;
+
+public class HotWord extends BaseHotWord
+{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private Integer parentId;
+	
+	public HotWord()
+	{
+	}
+
+	public HotWord(Integer id, String name, Integer parentId)
+	{
+		super(id, name);
+		this.parentId = parentId;
+	}
+
+	/**
+	 * @return the parentId
+	 */
+	public Integer getParentId()
+	{
+		return parentId;
+	}
+
+	/**
+	 * @param parentId the parentId to set
+	 */
+	public void setParentId(Integer parentId)
+	{
+		this.parentId = parentId;
+	}
+	
+}

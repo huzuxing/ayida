@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+	default-lazy-init="true">
+	
+	<!-- 开启mvc注解扫描 -->
+	<context:annotation-config/>
+	
+	<!-- 设置注解扫描包 -->
+	<context:component-scan base-package="com.ayida.*">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<!-- 加载数据源配置文件 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/config/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="initialSize" value="${druid.initialSize}"/>
+		<property name="maxActive" value="${druid.maxActive}"/>
+		<property name="minIdle" value="${druid.minIdle}"/>
+		<property name="maxWait" value="${druid.maxWait}"/>
+		<property name="removeAbandoned" value="${druid.removeAbandoned}"/>
+		<property name="removeAbandonedTimeout" value="${druid.removeAbandonedTimeout}"/>
+		<property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}"/>
+		<property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}"/>
+		<property name="logAbandoned" value="${druid.logAbandoned}"/>
+		<property name="testWhileIdle" value="${druid.testWhileIdle}"/>
+		<property name="validationQuery" value="${druid.validationQuery}"/>
+		<property name="testOnBorrow" value="${druid.testOnBorrow}"/>
+		<property name="testOnReturn" value="${druid.testOnReturn}"/>
+		<property name="poolPreparedStatements" value="${druid.poolPreparedStatements}"/>
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}"/>
+		<property name="filters" value="${druid.filters}"/>
+	</bean>
+	<!-- SessionFactory 配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:sqlMapperConfig.xml"/>
+		<!-- <property name="mapperLocations" value="classpath:com/ayida/cms/entity/mapper/*.xml"/> -->
+	</bean>
+	<!-- 扫描所有的DAO -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.ayida.cms.dao"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>	
+	</bean>
+	<!-- transactionManager -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 开启事物扫描 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<!-- sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg  index="0" ref="sqlSessionFactory"/>
+	</bean>
+</beans>

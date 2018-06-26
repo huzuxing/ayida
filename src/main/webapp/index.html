@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="static/css/jquery.autocomplete.css"/>
+<script type="text/javascript" src="static/js/jquery.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="static/js/jquery.autocomplete.js"></script>
+<script>
+//delay延迟时间（毫秒）
+$(function() {
+	$.ajax({
+		url : "api/search/ajaxSearch.jspx",
+		type : "GET",
+		data : {query:"ab"},
+		dataType : json,
+		success:function(data)
+		{
+			alert(data);
+		},
+		error : function()
+		{
+			alert(123);
+		}
+	});
+	/* var data = "the People's Republic of China".split(" ");
+    $("#auto").autocomplete(data,{minChars:0}).result(function(event,data,formatted){
+        alert(data);
+    }); */
+	/* var countries = [{value:"A", data:"B"},{value:"C", data:"D"}];
+	$("input[name=query]").autocomplete({
+		lookup:countries,
+		onSelect:function(s)
+		{
+			alert(s.value);
+		} */
+		 /* source: "api/search/ajaxSearch.jspx",
+		 minLength: 2,
+		 max:5,
+		 delay:100,
+		 autoFocus: true,
+		 select: function(e, ui) {
+			 $("input[name='query']").val(ui.item.value);
+			 $("#searchForm").submit();
+		 },
+		 success: function( data ) {
+			    response( $.map( data.items, function( item ) {
+			        return {
+			         label: '<B>' + item.id + '</B><br>' + item.label,
+			         value: item.id
+			        }
+			       }));
+		} */
+	//});
+});
+function qkeypress(){
+	var q = $("input[name=query]");
+	$.ajax({
+		url : "api/search/ajaxSearch.jspx",
+		type : "GET",
+		data : {query:q.val().trim()},
+		dataType : json,
+		success:function(data)
+		{
+			alert(data);
+		},
+		error : function()
+		{
+			alert(123);
+		}
+	});
+	/* if(q.val().trim() != ""){
+		$("input[name=query]").autocomplete("enable");
+	}else{
+		$("input[name=query]").autocomplete("disable");
+	} */
+}
+</script>
+</head>
+<body>
+hello!<a href="api/search/ajaxSearch.jspx?query=ab"> here </a>
+<form action="${base}/file/hospital/excelImport.do" method="POST" id="searchForm" enctype="multipart/form-data">
+	<input type="file" name="excel" />
+	<input type="submit" value="submit"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+	default-lazy-init="true">
+	
+	<!--缓存配置-->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" scope="singleton">
+		<property name="configLocation">
+			<value>/WEB-INF/config/ehcache-application.xml</value>
+		</property>
+	</bean>
+	
+	<!-- 搜索词汇缓存 -->
+	<bean id="ehSearchWordCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager"/>
+		</property>
+		<property name="cacheName">
+			<value>com.ayida.cms.entity.hotword.SearchWord</value>
+		</property>
+		<qualifier value="searchWords"/>
+	</bean>
+</beans>

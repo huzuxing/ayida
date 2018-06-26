@@ -1,0 +1,61 @@
+package com.ayida.cms.entity.user;
+
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.ayida.cms.entity.role.Role;
+import com.ayida.common.constant.UserStatus;
+import com.google.gson.annotations.Expose;
+
+public class User extends BaseUser
+{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Expose
+	private BigInteger phone;
+
+	/**
+	 * @return the phone
+	 */
+	public BigInteger getPhone()
+	{
+		return phone;
+	}
+
+	/**
+	 * @param phone
+	 *            the phone to set
+	 */
+	public void setPhone(BigInteger phone)
+	{
+		this.phone = phone;
+	}
+
+	/**
+	 * 获取权限集
+	 * 
+	 * @return
+	 */
+	public Set<String> getPerms()
+	{
+		if (UserStatus.DISABLED == getIsDisabled())
+		{
+			return null;
+		}
+		Set<Role> roles = getRoles();
+		if (null == roles)
+		{
+			return null;
+		}
+		Set<String> perms = new HashSet<String>();
+		// 利用Java8 forEach,处理权限集问题
+		roles.forEach((role) -> role.getPerms().forEach(
+				(perm) -> perms.add(perm.getUri())));
+		return perms;
+	}
+}

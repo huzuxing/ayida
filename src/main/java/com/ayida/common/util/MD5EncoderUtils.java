@@ -1,0 +1,122 @@
+package com.ayida.common.util;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MD5EncoderUtils
+{
+	private static Logger log = LoggerFactory.getLogger(MD5EncoderUtils.class);
+	
+	private static String defaultSalt;//set a default salt
+
+	/**
+	 * 
+	 * @param origPassword
+	 * @return
+	 */
+	public static String encodePassword(String origPassword)
+	{
+		return encodePassword(origPassword, defaultSalt);
+	}
+	
+	/**
+	 * 混淆加密，防止暴力破解
+	 * @param origPassword
+	 * @param salt
+	 * @return
+	 */
+	public static String encodePassword(String origPassword, Object salt)
+	{
+		String saltPass = mergePasswordAndSalt(origPassword, salt, false);
+		MessageDigest messageDigest = getMessageDigest();
+		byte[] digests;
+		try
+		{
+			digests = messageDigest.digest(saltPass.getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			log.error("character UTF-8 not supported...");
+			throw new IllegalStateException("character UTF-8 not supported");
+		}
+		return new String(Hex.encodeHex(digests));
+	}
+	
+	/**
+	 * 获取加密器
+	 * @return
+	 */
+	protected static final MessageDigest getMessageDigest()
+	{
+		String algorithm = "MD5";
+		try
+		{
+			return MessageDigest.getInstance(algorithm);
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			throw new IllegalArgumentException("No such algorithm[" + algorithm
+					+ "]");
+		}
+	}
+	
+	/**
+	 * 混淆密码
+	 * @param origPassword
+	 * @param salt
+	 * @param strict
+	 * @return
+	 */
+	private static String mergePasswordAndSalt(String origPassword, Object salt, boolean strict)
+	{
+		if (null == origPassword)
+		{
+			origPassword = "";
+		}
+		
+		if (strict && (null != salt))
+		{
+			if ((salt.toString().lastIndexOf("{") != -1) &&
+					(salt.toString().lastIndexOf("}") != -1))
+			{
+				throw new IllegalArgumentException("Cannot use { or } in salt.toString");
+			}
+		}
+		
+		if ((null == salt) || "".equals(salt))
+		{
+			return origPassword;
+		}
+		else
+		{
+			return origPassword + "{" + salt.toString() + "}";
+		}
+	}
+	
+	/**
+	 * 密码校验
+	 * @param encPassword
+	 * @param origPassword
+	 * @param salt
+	 * @return
+	 */
+	public static boolean isPasswordValidate(String encPassword, String origPassword, String salt)
+	{
+		if (null == encPassword)
+		{
+			return false;
+		}
+		String password = encodePassword(origPassword, salt);
+		return encPassword.equals(password);
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println(encodePassword("ayida15916"));
+	}
+}

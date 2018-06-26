@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.DoctorDAO">
+	<!-- 医生的基本信息 -->
+	<resultMap type="Doctor" id="BasicDoctor">
+		<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="doctor_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="phone" column="phone" javaType="java.math.BigInteger"
+			jdbcType="BIGINT" />
+		<result property="email" column="email" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="nationality" column="nationality" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="cardType" column="card_type" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result property="gender" column="gender" javaType="Integer"
+			jdbcType="TINYINT" />
+		<result property="degree" column="degree" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="cardId" column="card_id" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 医生信息，包括疾病关联 和医院信息-->
+	<resultMap type="Doctor" id="Doctor">
+		<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="doctor_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="phone" column="phone" javaType="java.math.BigInteger"
+			jdbcType="BIGINT" />
+		<result property="email" column="email" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="nationality" column="nationality" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="cardType" column="card_type" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result property="gender" column="gender" javaType="Integer"
+			jdbcType="TINYINT" />
+		<result property="degree" column="degree" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="cardId" column="card_id" javaType="String"
+			jdbcType="VARCHAR" />
+		<association property="doctorExt" javaType="DoctorExt">
+			<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+			<result property="name" column="doctor_name" javaType="String"
+				jdbcType="VARCHAR" />
+			<result property="job" column="job" javaType="String"
+				jdbcType="VARCHAR" />
+			<result property="departmentId" column="department_id" javaType="Integer"
+				jdbcType="INTEGER" />
+			<result property="professionalTitles" column="professional_titles"
+				javaType="String" jdbcType="VARCHAR" />
+			<result property="skilledField" column="skilled_field"
+				javaType="String" jdbcType="VARCHAR" />
+			<result property="certification" column="certification"
+				javaType="String" jdbcType="VARCHAR" />
+			<result property="comment" column="comments" javaType="String"
+				jdbcType="VARCHAR" />
+			<result property="img" column="doctor_img" javaType="String"
+				jdbcType="VARCHAR" />
+			<result property="seeTime" column="see_time" javaType="String"
+				jdbcType="VARCHAR" />
+			<result property="description" column="de_description" javaType="String"
+				jdbcType="VARCHAR" />
+		</association>
+		<association property="department" javaType="Department">
+			<id property="id" column="department_id" javaType="Integer" jdbcType="INTEGER"/>
+			<result property="name" column="department_name" javaType="String" jdbcType="VARCHAR"/>
+			<result property="description" column="dt_description" javaType="String" jdbcType="VARCHAR"/>
+		</association>
+		<collection property="hospitals" javaType="java.util.Set"
+			resultMap="hospitals" />
+		<collection property="subProfessionals" javaType="java.util.Set"
+			resultMap="subProfessionals" />
+		
+	</resultMap>
+
+	<resultMap type="Hospital" id="hospitals">
+		<id property="id" column="hospital_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="hospital_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="longitude" column="longitude" javaType="Double"
+			jdbcType="DOUBLE" />
+		<result property="latitude" column="latitude" javaType="Double"
+			jdbcType="DOUBLE" />
+		<result property="address" column="address" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="desc" column="h_description" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="cityName" column="city_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="belongings" column="belongings" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap type="SubProfessional" id="subProfessionals">
+		<id property="id" column="sub_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="sub_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<collection property="diseases" javaType="java.util.Set" resultMap="diseases"/>
+	</resultMap>
+	
+	<resultMap type="Disease" id="diseases">
+		<id property="id" column="disease_id" javaType="Integer" jdbcType="INTEGER"/>
+		<result property="typeId" column="disease_type_id" javaType="String" jdbcType="VARCHAR"/>
+		<result property="name" column="disease_name" javaType="String" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<insert id="save" parameterType="Doctor" useGeneratedKeys="true"
+		keyProperty="id">
+		<![CDATA[
+			insert into doctor(doctor_name, phone, email, nationality, card_type, 
+			card_id, gender, degree) values(#{name}, #{phone}, #{email}, #{nationality}, 
+			#{cardType}, #{cardId}, #{gender}, #{degree})
+		]]>
+	</insert>
+
+	<insert id="saveDoctorHospital" parameterType="java.util.Map">
+		<![CDATA[
+			insert into doctor_hospital(doctor_id, hospital_id) 
+			values(#{doctorId}, #{hospitalId}) 
+		]]>
+	</insert>
+
+	<insert id="saveDoctorSubprofessional">
+		<![CDATA[
+			insert into doctor_sub_professional(doctor_id, sub_id) 
+			values(#{doctorId}, #{subId}) 
+		]]>
+	</insert>
+	
+	<select id="getById" parameterType="java.util.Map" resultMap="Doctor">
+    	<![CDATA[
+    		select d.doctor_id as doctor_id, 
+    		d.doctor_name as doctor_name, 
+    		d.phone as phone, 
+    		d.email as email, 
+    		d.nationality as nationality, 
+    		d.card_type as card_type, 
+    		d.gender as gender, 
+    		d.degree as degree, 
+    		d.card_id as card_id, 
+    		de.job as job, 
+    		de.professional_titles as professional_titles, 
+    		de.skilled_field as skilled_field, 
+    		de.certification as certification, 
+    		de.comments as comments, 
+    		de.see_time as see_time, 
+    		de.doctor_img as doctor_img, 
+    		de.description as de_description, 
+    		dt.department_id as department_id, 
+    		dt.department_name as department_name, 
+    		dt.description as dt_description, 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		di.disease_id as disease_id, 
+    		di.disease_name as disease_name, 
+    		di.type_id as disease_type_id, 
+    		h.hospital_id as hospital_id, 
+    		h.hospital_name as hospital_name, 
+    		h.longitude as longitude, 
+    		h.latitude as latitude, 
+    		h.address as address, 
+    		h.description as h_description, 
+    		h.city_name as city_name, 
+    		h.belongings as belongins 
+    		from doctor d 
+    		left join doctor_ext de on d.doctor_id = de.doctor_id 
+    		left join department dt on dt.department_id = de.department_id 
+    		left join doctor_sub_professional dsp on d.doctor_id = dsp.doctor_id 
+    		left join sub_professional sp on dsp.sub_id = sp.sub_id 
+    		left join sub_disease sd on sp.sub_id = sd.sub_id 
+    		left join disease di on sd.disease_id = di.disease_id 
+    		left join doctor_hospital dh on d.doctor_id = dh.doctor_id 
+    		left join hospital h on dh.hospital_id = h.hospital_id 
+    		where d.doctor_id=#{id} 
+    	]]>
+	</select>
+
+	<select id="getDoctorsByUserId" parameterType="Pager"
+		resultMap="Doctor">
+    	<![CDATA[
+    		select d.doctor_id as doctor_id, 
+    		d.doctor_name as doctor_name, 
+    		d.phone as phone, 
+    		d.email as email, 
+    		d.nationality as nationality, 
+    		d.card_type as card_type, 
+    		d.gender as gender, 
+    		d.degree as degree, 
+    		d.card_id as card_id, 
+    		de.job as job, 
+    		de.professional_titles as professional_titles, 
+    		de.skilled_field as skilled_field, 
+    		de.certification as certification, 
+    		de.comments as comments, 
+    		de.see_time as see_time, 
+    		de.doctor_img as doctor_img, 
+    		de.description as de_description, 
+    		dt.department_id as department_id, 
+    		dt.department_name as department_name, 
+    		dt.description as dt_description, 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		di.disease_id as disease_id, 
+    		di.disease_name as disease_name, 
+    		di.type_id as disease_type_id, 
+    		h.hospital_id as hospital_id, 
+    		h.hospital_name as hospital_name, 
+    		h.longitude as longitude, 
+    		h.latitude as latitude, 
+    		h.address as address, 
+    		h.description as h_description, 
+    		h.city_name as city_name, 
+    		h.belongings as belongins 
+    		from doctor d 
+    		left join user_doctor ud on d.doctor_id = ud.doctor_id 
+    		left join doctor_ext de on de.doctor_id = d.doctor_id 
+    		left join department dt on dt.department_id = de.department_id 
+    		left join doctor_sub_professional dsp on dsp.doctor_id = d.doctor_id 
+    		left join sub_professional sp on sp.sub_id = dsp.sub_id 
+    		left join sub_disease sd on sd.sub_id = sp.sub_id 
+    		left join disease di on di.disease_id = sd.disease_id 
+    		left join doctor_hospital dh on dh.doctor_id = d.doctor_id 
+    		left join hospital h on h.hospital_id = dh.hospital_id 
+    		where ud.user_id=#{params.userId} 
+    	]]>
+	</select>
+	
+	<select id="isCollected" parameterType="java.util.Map"
+		resultMap="BasicDoctor">
+    	<![CDATA[
+    		select d.doctor_id as doctor_id, 
+    		d.doctor_name as doctor_name, 
+    		d.phone as phone, 
+    		d.email as email, 
+    		d.nationality as nationality, 
+    		d.card_type as card_type, 
+    		d.gender as gender, 
+    		d.degree as degree, 
+    		d.card_id as card_id 
+    		from user_doctor ud 
+    		left join doctor d on ud.doctor_id = d.doctor_id
+    		where ud.user_id=#{userId} and ud.doctor_id=#{doctorId}
+    	]]>
+	</select>
+
+	<update id="update" parameterType="java.util.Map">
+		<![CDATA[
+			update doctor 
+			set 
+			doctor_name=#{bean.name}, 
+			phone=#{bean.phone}, 
+			email=#{bean.email}, 
+			nationality=#{bean.nationalty}, 
+			card_type=#{bean.cardType}, 
+			card_id=#{bean.cardId}, 
+			gender=#{bean.gender}, 
+			degree=#{bean.degree}, 
+			where doctor_id=#{bean.id} 
+		]]>
+	</update>
+
+	<delete id="delete" parameterType="java.util.Map">
+		<![CDATA[
+			delete from doctor where doctor_id=#{id}
+		]]>
+	</delete>
+</mapper> 

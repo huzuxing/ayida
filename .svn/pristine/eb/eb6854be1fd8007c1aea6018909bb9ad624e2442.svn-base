@@ -1,0 +1,25 @@
+package com.ayida.common.constant;
+
+
+/**
+ * 用户状态设计
+ * @author John Hu
+ *
+ */
+/**
+ * @author John Hu
+ *
+ */
+public class UserStatus
+{
+	/**
+	 * ABLED = 1 用户可有效
+	 */
+	public static final Integer ABLED = 1;
+	
+	/**
+	 * DISABLED = 0 用户为禁用状态
+	 */
+	public static final Integer DISABLED = 0;
+	
+}

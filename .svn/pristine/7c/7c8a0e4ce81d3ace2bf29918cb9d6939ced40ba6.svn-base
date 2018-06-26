@@ -1,0 +1,10 @@
+package com.ayida.cms.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.ayida.common.mybatis.BaseDAO;
+@Repository(value = "hospitalDao")
+public class HospitalDAOImpl extends BaseDAO
+{
+
+}

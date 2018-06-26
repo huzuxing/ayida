@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>阿医达-后台管理-www.ayida.cn</title>
+    
+</head>
+<body class="easyui-layout" style="overflow-y: hidden"  scroll="no">
+	<#if words??>
+		<#list words as w>
+			${w.name} <a href="${base}/admin/hotword/update.do?id=${w.id}">修改</a>
+		</#list>
+	</#if>
+</body>
+</html>

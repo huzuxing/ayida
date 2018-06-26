@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.SubProfessionalDAO">
+
+	<resultMap type="SubProfessional" id="SubProfessional">
+		<id property="id" column="sub_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="sub_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<collection property="diseases" javaType="java.util.Set" resultMap="diseases"/>
+	</resultMap>
+	<resultMap type="Disease" id="diseases">
+		<id property="id" column="disease_id" javaType="Integer" jdbcType="INTEGER"/>
+		<result property="typeId" column="disease_type_id" javaType="String" jdbcType="VARCHAR"/>
+		<result property="name" column="disease_name" javaType="String" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="save" parameterType="SubProfessional" useGeneratedKeys="true"
+		keyProperty="id">
+    	<![CDATA[
+    		insert into sub_professional(sub_name) values(#{name})
+    	]]>
+	</insert>
+	
+	<insert id="saveSubDisease" parameterType="java.util.Map">
+    	<![CDATA[
+    		insert into sub_disease(sub_id, disease_id) values(#{subId}, #{diseaseId})
+    	]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update sub_professional set sub_name=#{bean.name}  
+    		where sub_id=#{bean.id} 
+    	]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from sub_professional where sub_id=#{id}
+    	]]>
+	</delete>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="SubProfessional">
+    	<![CDATA[
+    		select 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		d.disease_id as disease_id, 
+    		d.disease_name as disease_name, 
+    		d.type_id as disease_type_id 
+    		from sub_professional sp 
+    		left join sub_disease sd on sd.sub_id = sp.sub_id 
+    		left join disease d on d.disease_id = sd.disease_id 
+    		where sub_name=#{name}
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="SubProfessional">
+    	<![CDATA[
+    		select 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		sd.disease_id as disease_id, 
+    		sd.disease_name as disease_name, 
+    		d.type_id as disease_type_id  
+    		from sub_professional sp 
+    		left join sub_disease sd on sd.sub_id = sp.sub_id 
+    		left join disease d on d.disease_id = sd.disease_id 
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="SubProfessional">
+    	<![CDATA[
+    		select 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		sd.disease_id as disease_id, 
+    		sd.disease_name as disease_name, 
+    		d.type_id as disease_type_id  
+    		from sub_professional sp 
+    		left join sub_disease sd on sd.sub_id = sp.sub_id 
+    		left join disease d on d.disease_id = sd.disease_id 
+    		where sub_id=#{id}
+    	]]>
+	</select>
+	
+	<select id="getPagerList" parameterType="Pager" resultMap="SubProfessional">
+    	<![CDATA[
+    		select 
+    		sp.sub_id as sub_id, 
+    		sp.sub_name as sub_name, 
+    		sd.disease_id as disease_id, 
+    		sd.disease_name as disease_name, 
+    		d.type_id as disease_type_id  
+    		from sub_professional sp 
+    		left join sub_disease sd on sd.sub_id = sp.sub_id 
+    		left join disease d on d.disease_id = sd.disease_id 
+    	]]>
+	</select>
+</mapper> 

@@ -1,0 +1,63 @@
+package com.ayida.cms.service.impl;
+
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ayida.cms.dao.UserDAO;
+import com.ayida.cms.entity.user.User;
+import com.ayida.cms.service.UserService;
+import com.ayida.common.constant.user.UserStatus;
+import com.ayida.common.util.MD5EncoderUtils;
+
+@Service(value = "userService")
+public class UserServiceImpl implements UserService
+{
+
+	@Transactional
+	public int save(String username, String password, String phone, String ip)
+	{
+		User user = new User();
+		user.setRegisterIp(ip);
+		user.setRegisterTime(new Date());
+		user.setUsername(phone);
+		BigInteger phoneBig = BigInteger.valueOf(Long.valueOf(phone));
+		user.setPhone(phoneBig);
+		user.setPassword(MD5EncoderUtils.encodePassword(password));
+		user.setIsDisabled(UserStatus.ABLED);
+		return userDao.save(user);
+	}
+
+	@Autowired
+	private UserDAO userDao;
+
+	@Override
+	public User findById(Integer id)
+	{
+		return userDao.findById(id);
+	}
+
+	@Override
+	public List<User> findAll()
+	{
+		return userDao.findAll();
+	}
+
+	@Override
+	public User findByUsername(String username)
+	{
+		return userDao.findByUsername(username);
+	}
+
+	@Override
+	public int updateUserPassword(String username, String newPassword)
+	{
+		String password = MD5EncoderUtils.encodePassword(newPassword);
+		return userDao.updateUserPassword(username, password);
+	}
+
+}

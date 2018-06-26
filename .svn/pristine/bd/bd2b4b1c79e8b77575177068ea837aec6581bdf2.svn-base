@@ -1,0 +1,134 @@
+package com.ayida.cms.entity.hospital;
+
+public class Hospital implements java.io.Serializable
+{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private Integer id;
+	
+	private String name;
+	
+	private Double longitude;
+	
+	private Double latitude;
+	
+	private String address;
+	
+	private String desc;
+	
+	public Hospital()
+	{
+	}
+
+	public Hospital(Integer id, String name, Double longitude, Double latitude,
+			String address)
+	{
+		super();
+		this.id = id;
+		this.name = name;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.address = address;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Integer getId()
+	{
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Integer id)
+	{
+		this.id = id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	/**
+	 * @return the longitude
+	 */
+	public Double getLongitude()
+	{
+		return longitude;
+	}
+
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(Double longitude)
+	{
+		this.longitude = longitude;
+	}
+
+	/**
+	 * @return the latitude
+	 */
+	public Double getLatitude()
+	{
+		return latitude;
+	}
+
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(Double latitude)
+	{
+		this.latitude = latitude;
+	}
+
+	/**
+	 * @return the address
+	 */
+	public String getAddress()
+	{
+		return address;
+	}
+
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(String address)
+	{
+		this.address = address;
+	}
+	
+
+	/**
+	 * @return the desc
+	 */
+	public String getDesc()
+	{
+		return desc;
+	}
+
+	/**
+	 * @param desc the desc to set
+	 */
+	public void setDesc(String desc)
+	{
+		this.desc = desc;
+	}
+}

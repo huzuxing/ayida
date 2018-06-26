@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+   
+<mapper namespace="com.ayida.cms.dao.UserDAO">  
+    
+    <resultMap type="com.ayida.cms.entity.user.User" id="User">
+    	<id property="id" column="user_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="username" column="username" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="phone" column="phone" javaType="java.math.BigInteger" jdbcType="BIGINT"/>
+    	<result property="password" column="password" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="registerIp" column="register_ip" javaType="String" jdbcType="INTEGER"/>
+    	<result property="registerTime" column="register_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    	<result property="lastLoginIp" column="last_login_ip" javaType="String" jdbcType="INTEGER"/>
+    	<result property="lastLoginTime" column="last_login_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    	<result property="loginCount" column="login_count" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="isDisabled" column="is_disabled" javaType="Integer" jdbcType="TINYINT"/>
+    	<result property="updateTime" column="update_time" javaType="Date" jdbcType="TIMESTAMP"/>
+    	<collection property="roles" javaType="java.util.Set" resultMap="roles"/>
+    </resultMap>
+    
+    <!-- 角色 -->
+    <resultMap type="com.ayida.cms.entity.role.Role" id="roles">
+    	<id property="id" column="role_id" javaType="Integer" jdbcType="INTEGER"/>
+    	<result property="name" column="role_name" javaType="String" jdbcType="VARCHAR"/>
+    	<result property="isSuper" column="is_super" javaType="Integer" jdbcType="TINYINT"/>
+    	<collection property="perms" javaType="java.util.Set" resultMap="perms"/>
+    </resultMap>
+
+    <!-- 权限 -->
+	<resultMap type="com.ayida.cms.entity.role.Permission" id="perms">
+		<result property="roleId" column="role_id" javaType="Integer" jdbcType="INTEGER"/>
+		<result property="uri" column="uri" javaType="String" jdbcType="VARCHAR"/>
+	</resultMap>    
+    
+    <insert id="save" parameterType="User" keyProperty="user_id">
+    	<![CDATA[
+    		insert into user(username, password, phone, register_ip, register_time) values(#{username}, 
+    		#{password}, #{phone}, INET_ATON(#{registerIp}), #{registerTime})
+    	]]>
+    </insert>
+    
+    <update id="updateById" parameterType="User">
+    	<![CDATA[
+    		update user set username=#{username},phone=${phone},is_disabled=#{isDisabled},
+    		update_time=#{updateTime} where user_id=#{id}
+    	]]>
+    </update>
+    
+    <update id="updatePassword" parameterType="java.util.Map">
+    	<![CDATA[
+    		update user set password=#{password} where username=#{username}
+    	]]>
+    </update>
+    
+    <select id="findByUsername" parameterType="java.util.Map" resultMap="User">
+    	<![CDATA[
+    		select 
+    		u.user_id as user_id, 
+    		u.username as username, 
+    		u.password as password, 
+    		u.phone as phone, 
+    		INET_NTOA(u.register_ip) as register_ip, 
+    		u.register_time as register_time, 
+    		u.last_login_ip as last_login_ip, 
+    		u.last_login_time as last_login_time, 
+    		u.login_count as login_count, 
+    		u.is_disabled as is_disabled, 
+    		u.update_time as update_time, 
+    		r.role_id as role_id, 
+    		r.role_name as role_name, 
+    		r.is_super as is_super, 
+    		rp.uri as uri 
+    		from user u 
+    		left join user_role ur on u.user_id = ur.user_id 
+    		left join role r on ur.role_id = r.role_id 
+    		left join role_permission rp on r.role_id = rp.role_id 
+    		where u.username=#{username}
+    	]]>
+    </select>
+    
+    <select id="findById" parameterType="java.util.Map" resultMap="User">
+    	<![CDATA[
+    		select u.user_id, u.username, u.password, u.phone, INET_NTOA(u.register_ip), 
+    		u.register_time, u.last_login_ip, u.last_login_time, 
+    		u.login_count, u.is_disabled, u.update_time 
+    		from user u 
+    		left join user_role ur on ur.user_id = u.user_id 
+    		left join role r on r.role_id = ur.role_id 
+    		where u.user_id=#{id}
+    	]]>
+    </select>
+    
+    <select id="findAll" resultMap="User">
+    	<![CDATA[
+    		select user_id, username, password, phone, register_ip, register_time, last_login_ip, last_login_time, 
+    		login_count, is_disabled, update_time from user
+    	]]>
+    </select>
+</mapper> 

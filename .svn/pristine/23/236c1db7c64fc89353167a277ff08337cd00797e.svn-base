@@ -1,0 +1,10 @@
+package com.ayida.common.mybatis;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class BaseDAO
+{
+	@Autowired
+	protected SqlSession sqlSession;
+}

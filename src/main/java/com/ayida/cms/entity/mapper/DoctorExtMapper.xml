@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.DoctorExtDAO">
+
+	<resultMap type="DoctorExt" id="DoctorExt">
+		<id property="id" column="doctor_id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="doctor_name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="job" column="job" javaType="String" jdbcType="VARCHAR" />
+		<result property="departmentId" column="department_id" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result property="professionalTitles" column="professional_titles"
+			javaType="String" jdbcType="VARCHAR" />
+		<result property="skilledField" column="skilled_field"
+			javaType="String" jdbcType="VARCHAR" />
+		<result property="certification" column="certification"
+			javaType="String" jdbcType="VARCHAR" />
+		<result property="comment" column="comments" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="img" column="doctor_img" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="seeTime" column="see_time" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="description" column="description" javaType="String"
+				jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="save" parameterType="DoctorExt">
+		<![CDATA[
+			insert into doctor_ext(
+			doctor_id, doctor_name, 
+			job, department_id, 
+			professional_titles, 
+			skilled_field, 
+			certification, 
+			comments, doctor_img, see_time, description) 
+			values(
+			#{id}, #{name}, #{job}, 
+			#{departmentId}, #{professionalTitles}, 
+			#{skilledField}, 
+			#{certification}, #{comment}, #{img}, #{seeTime}, #{description})
+		]]>
+	</insert>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="DoctorExt">
+    	<![CDATA[
+    		select doctor_id, doctor_name, job, department_id, professional_titles, skilled_field, 
+    		certification, comments, doctor_img, see_time, description   
+    		from doctor_ext 
+    		where doctor_id=#{id}
+    	]]>
+	</select>
+
+	<update id="update" parameterType="java.util.Map">
+		<![CDATA[
+			update doctor_ext 
+			set 
+			doctor_name=#{bean.name}, 
+			job=#{bean.job}, 
+			department_id=#{bean.departmentId}, 
+			professional_titles=#{bean.professionalTiles}, 
+			skilled_field=#{bean.skilledField}, 
+			certification=#{bean.certification}, 
+			comments=#{bean.comment}, 
+			doctor_img=#{bean.img}, 
+			see_time=#{bean.seeTime}, 
+			description=#{bean.description} 
+			where doctor_id=#{bean.id}
+		]]>
+	</update>
+
+	<delete id="delete" parameterType="java.util.Map">
+		<![CDATA[
+			delete from doctor_ext where doctor_id=#{id}
+		]]>
+	</delete>
+</mapper> 

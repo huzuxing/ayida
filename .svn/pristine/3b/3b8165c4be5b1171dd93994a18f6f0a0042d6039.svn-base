@@ -1,0 +1,8 @@
+package com.ayida.cms.dao;
+
+import com.ayida.cms.entity.authc.Authentication;
+
+public interface AuthenticationDAO
+{
+	public Authentication login(Authentication bean);
+}

@@ -1,0 +1,21 @@
+package com.ayida.cms.service;
+
+import java.util.List;
+
+import com.ayida.cms.entity.doctor.SubProfessional;
+import com.ayida.common.mybatis.Pager;
+
+public interface SubProfessionalService
+{
+	public SubProfessional save(SubProfessional bean);
+
+	public SubProfessional findById(Integer id);
+
+	public int updateBean(SubProfessional bean);
+
+	public int deleteById(Integer id);
+
+	public List<SubProfessional> getAllSubProfessional();
+
+	public List<SubProfessional> getSubProfessionalPagerList(Pager pager);
+}

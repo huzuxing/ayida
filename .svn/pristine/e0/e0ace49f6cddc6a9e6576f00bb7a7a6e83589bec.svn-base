@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ayida.cms.dao.RelativeSearchWordDAO">
+	<resultMap type="RelativeSearchWord" id="relativeWord">
+		<id property="relativeId" column="relative_id" javaType="Integer" jdbcType="INTEGER"/>
+		<result property="id" column="id" javaType="Integer" jdbcType="INTEGER" />
+		<result property="name" column="name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="nameInitial" column="nameInitial" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="hit" column="hit" javaType="Integer"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="save" parameterType="RelativeSearchWord"
+		useGeneratedKeys="true" keyProperty="relativeId">
+		<![CDATA[
+			insert into relative_search_word(id, name, nameInitial, hit) values(#{id}, #{name}, #{nameInitial}, #{hit}) 
+		]]>
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+    	<![CDATA[
+    		update relative_search_word set id=#{id} name=#{bean.name}, nameInitial=#{bean.nameInitial}, hit=#{bean.hit}
+    		where id=#{bean.id}
+    	]]>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+    	<![CDATA[
+    		delete from relative_search_word where  relative_id=#{id}
+    	]]>
+	</delete>
+
+	<select id="findByName" parameterType="java.util.Map" resultMap="relativeWord">
+    	<![CDATA[
+    		select relative_id, id, name, nameInitial, hit from relative_search_word 
+    		where name like CONCAT(CONCAT("%", #{name}), "%") or nameInitial like CONCAT(#{nameInitial}, "%") 
+    		order by hit desc
+    	]]>
+	</select>
+
+	<select id="getAll" resultMap="relativeWord">
+    	<![CDATA[
+    		select relative_id, id, name, nameInitial, hit from relative_search_word 
+    	]]>
+	</select>
+
+	<select id="getById" parameterType="java.util.Map" resultMap="relativeWord">
+    	<![CDATA[
+    		select relative_id, id, name, nameInitial, hit from relative_search_word 
+    		where relative_id=#{id}
+    	]]>
+	</select>
+</mapper> 

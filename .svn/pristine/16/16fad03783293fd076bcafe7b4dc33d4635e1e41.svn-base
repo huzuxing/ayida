@@ -1,0 +1,40 @@
+package com.ayida.common.constant;
+
+/**
+ * 常量类，定义为Abstract 类，防止实例化
+ * 
+ * @author John Hu
+ *
+ */
+public abstract class Constants
+{
+	/**
+	 * 全文检索索引路径
+	 */
+	public static final String LUCENE_PATH = "/WEB-INF/lucene";
+
+	/**
+	 * 分页默认页码
+	 */
+	public static final Integer DEFAULT_PAGENO = 1;
+
+	/**
+	 * 分页默认页容量
+	 */
+	public static final Integer DEFAULT_PAGESIZE = 5;
+
+	/**
+	 * post 请求
+	 */
+	public static final String POST = "POST";
+
+	/**
+	 * get 请求
+	 */
+	public static final String GET = "GET";
+
+	/**
+	 * UTF-8 字符集
+	 */
+	public static final String UTF8 = "UTF-8";
+}

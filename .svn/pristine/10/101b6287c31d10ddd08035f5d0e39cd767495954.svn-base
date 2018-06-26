@@ -1,0 +1,25 @@
+package com.ayida.cms.service;
+
+import java.util.List;
+
+import com.ayida.cms.entity.doctor.Doctor;
+import com.ayida.common.mybatis.Pager;
+
+public interface DoctorService
+{
+	public Doctor save(Doctor bean);
+
+	public Doctor findById(Integer id);
+
+	public List<Doctor> getCollectedDoctorsByUserId(Integer userId);
+
+	public int updateBean(Doctor bean);
+
+	public int deleteById(Integer id);
+
+	public List<Doctor> getAllDoctors();
+
+	public List<Doctor> getDoctorPagerList(Pager pager);
+	
+	public Doctor findByIdOrDiseaseId(Integer id);
+}

@@ -1,0 +1,281 @@
+/*
+   Copyright (c) 2015,Deepspring Inc. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution, and decompilation.
+*/
+{margin:0; padding:0;}
+html, body{margin:0;padding:0;width:100%;height:100%; overflow:hidden;font-family:'Microsoft YaHei',Arial,sans-serif; color:#333;position: relative;}
+/*定义结果页背景颜色*/
+.top-bg{
+    background-color: #2aabd2;
+     width: 100%;
+     height: 150px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.body-bg{
+    background-color: #b2dba1;
+    height: 100%;
+    border: 1px solid #000000;
+}
+/*定义头部图片距离*/
+.top-img{
+    padding-left: 150px;
+}
+.top-font{
+    padding-left: 120px;
+    color: #ffffff;
+
+}
+#top-font01{
+    color: #ffffff;
+    font-size: 16px;
+    margin-left: 20px;
+
+}
+.top-div {
+    float: left;
+}
+.clear{
+    clear:both;
+    height:1px;
+    overflow:hidden;
+}
+.top-ss{
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-image: none;
+    border: none;
+    border-width: 1px 0 1px 1px;
+    box-shadow: none;
+    font: 16px arial;
+    height:40px;
+    outline: medium none;
+    padding: 9px 7px;
+    vertical-align: bottom;
+    width: 521px;
+
+}
+.top-sh{
+    margin: -5px;
+    width: 55px;
+    height: 40px;
+
+
+}
+.left-50{
+    margin-left: 50px;
+}
+/*筛选条件*/
+.body-bg02{
+    width: 98%;
+    margin: auto;
+    background-color: #ffffff;
+    height: 50px;
+}
+.body-bg02 ul{
+    float: left;
+    list-style: none;
+   margin-left: 350px;
+    text-align: center;
+
+}
+.body-bg02 ul li{
+    margin-left: 60px;
+    float: left;
+    padding-top: 6px;
+    margin-top: 7px;
+
+
+}
+.body-bg02 ul li a{
+    font-size: 20px;
+    padding:0px 10px;
+    color:#000000;
+}
+/*详细列表内容*/
+.body-bg03{
+    width: 98%;
+    height: 200px;
+    background-color: #ffffff;
+    margin: auto;
+
+}
+.body-bg04{
+    width: 100%;
+    height: 15px;
+}
+.body-header{
+    width: 80px;
+    height: 80px;
+    border: 1px #5e5e5e solid;
+    margin: 10px 0px 0px 100px;
+}
+.circle {
+    width: 80px;
+    height: 80px;
+    background-color:#fcf8e3; /* Can be set to transparent */
+    border: 1px #5e5e5e solid;
+    border-radius: 40px;
+}
+.body-people{
+    width: 22px;
+    height: 22px;
+    margin: 50px 0px 0px -25px;
+}
+.body-font{
+   padding: 10px 0px 0px 100px;
+}
+.body-font02{
+    padding-left: 80px;
+    color: #737373;
+}
+.containers{
+    align-content: center;
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 46rem;}
+
+.btn02 {
+    border: none;
+    color: white;
+    overflow: hidden;
+
+    padding: 0;
+    text-transform: uppercase;
+    width: 150px;
+    height: 40px;
+}
+.btn02 .color-1 {
+    background-color: #426fc5;
+}
+.container02 {
+    align-content: center;
+    padding-left: 60px;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 10px 0px 0px 20px;
+
+}
+.btn-round {
+    border-radius: 4px;
+    font-size: 20px;
+}
+.btn02.color-2 {
+     background-color: #ec971f;
+ }
+
+.material-design {
+    position: relative;
+}
+.left-100{
+   margin-left: 100px;
+}
+div caption{
+    text-align: center;
+    font-size: 18px;
+    color: #0f0f0f;
+
+}
+#time01 tr td{
+    text-align: center;
+}
+
+.contain .line{
+    width:375pt;
+    height:1px;
+    background-color:#e6e6e6;
+    margin:auto;
+    margin-top:4px;
+    margin-bottom:8pt;
+}
+.img-size{
+    width: 20px;
+    height: 20px;
+    margin: 3px 0px 0px 4px;
+}
+.line02{
+    width: 120px;
+    height: 1px;
+    background-color: #e6e6e6;
+    margin-top: 4px;
+    margin-bottom: 5px;
+
+
+}
+.body-fon04{
+    color: #28a4c9;
+    font-size: 16px;
+    font-weight: bold;
+
+    padding: inherit;
+    padding-bottom: 15px;
+    text-align: center;
+}
+/**更多信息样式**/
+
+.more_info_layer{
+	position: relative;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(128, 128, 128, 0.8);
+    z-index: 999;
+    color: #fff;
+    text-align:center;
+}
+.more_info_layer .more_content{
+	/* text-indent: -119988px;
+    text-align: left;
+    text-transform: capitalize;
+    background-repeat: no-repeat;
+    background-position: 50% 50%; */
+   	/* width: 30px;
+    height: 25px; */
+   /*  margin-top: 10px;
+    margin-right: 100px; */
+    text-align:center;
+}
+
+.more_introduction {
+	background-color: #ffffff;
+	margin: auto;
+	width: 98%;
+	border-top: 1px solid #808080;
+}
+.more_introduction ul{
+	margin-top: auto;
+	margin-left:410px;
+}
+.more_introduction ul .left_20{
+	padding-left: 20px;
+}
+.more_introduction ul li{
+	list-style: none;
+	float: left;
+	padding-right: 30px;
+	text-align: left;
+}
+.more_introduction ul li span{
+	padding-bottom:5px;
+	padding-left: 30px;
+}
+.on{
+	color: #2FB3FF;
+	border-bottom: 2px solid #2FB3FF;
+}
+.skilled_field ul li{
+	list-style: none;
+}

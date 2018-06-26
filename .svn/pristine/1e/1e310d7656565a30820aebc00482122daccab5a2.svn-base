@@ -1,0 +1,24 @@
+package com.ayida.common.mybatis;
+
+public class Pager
+{
+	private Integer pageNo;
+	
+	private Integer firstPage;
+	
+	private Integer lastPage;
+	
+	private Integer pageSize;
+	
+	private Integer totalPage;
+	
+	private Integer totalCount;
+	
+	private boolean isFirstPage;
+	
+	private boolean isLastPage;
+	
+	private Integer nextPage;
+	
+	private Integer prePage;
+}
